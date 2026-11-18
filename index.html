@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1:1 Photo Frame Generator</title>
+    <title>Event Photo Frame Generator</title>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -14,7 +14,7 @@
         }
         body {
             background-color: #f4f1ea;
-            color: #3b1c0e;
+            color: #2b1208;
             padding: 15px;
             display: flex;
             flex-direction: column;
@@ -28,7 +28,7 @@
             font-size: 18px;
             font-weight: 700;
             margin-bottom: 12px;
-            color: #4a1515;
+            color: #8B0000;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -41,7 +41,7 @@
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            color: #4a1515;
+            color: #8B0000;
         }
         /* Settings Panel */
         .settings-panel {
@@ -59,7 +59,7 @@
         .settings-panel h3 {
             font-size: 15px;
             margin-bottom: 10px;
-            color: #5c1616;
+            color: #8B0000;
             border-bottom: 1px solid #eee;
             padding-bottom: 5px;
         }
@@ -79,12 +79,17 @@
             border-radius: 5px;
             font-size: 14px;
         }
-        /* Main Controls */
+        /* Controls */
         .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .row-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
-            margin-bottom: 10px;
         }
         .file-btn {
             background: #fff;
@@ -95,7 +100,7 @@
             font-weight: 600;
             font-size: 14px;
             cursor: pointer;
-            color: #3b1c0e;
+            color: #2b1208;
             display: block;
         }
         .file-btn input {
@@ -104,7 +109,7 @@
         .input-box {
             width: 100%;
             padding: 10px 12px;
-            border: 1.5px solid #e6c875;
+            border: 1.5px solid #d4c4a8;
             border-radius: 8px;
             font-size: 14px;
             background: #fff;
@@ -112,7 +117,6 @@
         }
         .action-buttons {
             display: flex;
-            flex-wrap: wrap;
             gap: 8px;
             margin-bottom: 15px;
         }
@@ -124,12 +128,11 @@
             font-weight: 600;
             cursor: pointer;
             color: #fff;
-            background-color: #5c1616;
+            background-color: #8B0000;
             flex: 1;
             text-align: center;
-            min-width: 100px;
         }
-        /* Zoom & Pan Controls */
+        /* Zoom Control */
         .adjust-controls {
             background: #fff;
             padding: 10px;
@@ -137,19 +140,14 @@
             margin-bottom: 12px;
             border: 1px solid #d4c4a8;
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .slider-row {
-            display: flex;
             align-items: center;
             gap: 10px;
             font-size: 13px;
             font-weight: 600;
         }
-        .slider-row input[type="range"] {
+        .adjust-controls input[type="range"] {
             flex: 1;
-            accent-color: #5c1616;
+            accent-color: #8B0000;
         }
         /* Canvas Preview */
         .canvas-wrapper {
@@ -182,81 +180,61 @@
 
 <div class="container">
     <div class="header-title">
-        <span id="pageTitleDisplay">1:1 Photo Frame</span>
+        <span id="pageTitleDisplay">Circular Photo Frame Generator</span>
         <button class="settings-toggle" onclick="toggleSettings()">⚙️ ফ্রেম এডিট</button>
     </div>
 
     <!-- Customizer Panel -->
     <div class="settings-panel" id="settingsPanel">
-        <h3>ফ্রেমের লেখা ও লোগো পরিবর্তন করুন</h3>
+        <h3>ফ্রেমের তথ্য ও লেখা পরিবর্তন করুন</h3>
         <div class="setting-group">
-            <label>উপরের মূল শিরোনাম:</label>
-            <input type="text" id="cfgMainTitle" value="চরমানাই মাহফিলে আসার পরে" oninput="saveAndRender()">
+            <label>প্রধান শিরোনাম (বড় লেখা):</label>
+            <input type="text" id="cfgMainTitle" value="কেন্দ্রীয় সম্মেলন" oninput="saveAndRender()">
         </div>
         <div class="setting-group">
-            <label>উপ-শিরোনাম (হলুদ বক্স):</label>
-            <input type="text" id="cfgSubTitle" value="যাদের পরিবর্তন হয়েছে" oninput="saveAndRender()">
+            <label>উপ-শিরোনাম / সাল:</label>
+            <input type="text" id="cfgSubTitle" value="২০২৬" oninput="saveAndRender()">
         </div>
         <div class="setting-group">
-            <label>বাম ছবির নিচের লেখা:</label>
-            <input type="text" id="cfgLeftLabel" value="মাহফিলে আসার আগে" oninput="saveAndRender()">
+            <label>তারিখ ও সময়:</label>
+            <input type="text" id="cfgDate" value="৬ ডিসেম্বর ২০২৬ | শুক্রবার, সকাল ৯টা" oninput="saveAndRender()">
         </div>
         <div class="setting-group">
-            <label>ডান ছবির নিচের লেখা:</label>
-            <input type="text" id="cfgRightLabel" value="মাহফিলে আসার পরে" oninput="saveAndRender()">
+            <label>স্থান / মুক্তমঞ্চ:</label>
+            <input type="text" id="cfgLocation" value="মুক্তমঞ্চ, সোহরাওয়ার্দী উদ্যান, ঢাকা" oninput="saveAndRender()">
         </div>
         <div class="setting-group">
-            <label>নিচের তারিখ/ইভেন্ট বার্তা:</label>
-            <input type="text" id="cfgDateText" value="চরমানাই মাহফিল: ২৫, ২৬ ও ২৭ নভেম্বর ২০২৬" oninput="saveAndRender()">
-        </div>
-        <div class="setting-group">
-            <label>পেজ বা মিডিয়ার নাম (নিচে বামে):</label>
-            <input type="text" id="cfgBrandName" value="ENK MEDIA" oninput="saveAndRender()">
-        </div>
-        <div class="setting-group">
-            <label>নিচে ডানের স্লোগান:</label>
-            <input type="text" id="cfgSlogan" value="সত্য সংবাদ সবার আগে | পেইজটি ফলো দিয়ে সাথে থাকুন" oninput="saveAndRender()">
-        </div>
-        <div class="setting-group">
-            <label>লোগো আপলোড করুন:</label>
-            <input type="file" accept="image/*" onchange="uploadAsset(event, 'logo')">
+            <label>সংগঠন / প্রতিষ্ঠানের নাম:</label>
+            <input type="text" id="cfgOrgName" value="ইসলামী ছাত্র আন্দোলন বাংলাদেশ" oninput="saveAndRender()">
         </div>
         <div class="setting-group">
             <label>ব্যাকগ্রাউন্ড ছবি পরিবর্তন করুন:</label>
-            <input type="file" accept="image/*" onchange="uploadAsset(event, 'bg')">
+            <input type="file" accept="image/*" onchange="uploadBg(event)">
         </div>
     </div>
 
     <!-- User Inputs -->
     <div class="controls-grid">
         <label class="file-btn">
-            আগের ছবি দিন
-            <input type="file" accept="image/*" onchange="loadUserPhoto(event, 'left')">
+            🖼️ আপনার ছবি দিন
+            <input type="file" accept="image/*" onchange="loadUserPhoto(event)">
         </label>
-        <label class="file-btn">
-            পরের ছবি দিন
-            <input type="file" accept="image/*" onchange="loadUserPhoto(event, 'right')">
-        </label>
-        <input type="text" class="input-box" id="userName" placeholder="নাম লিখুন" oninput="renderCanvas()">
-        <input type="text" class="input-box" id="userDistrict" placeholder="জেলা লিখুন" oninput="renderCanvas()">
+        <div class="row-2">
+            <input type="text" class="input-box" id="userName" placeholder="আপনার নাম" oninput="renderCanvas()">
+            <input type="text" class="input-box" id="userDistrict" placeholder="জেলা" oninput="renderCanvas()">
+        </div>
     </div>
 
     <div class="action-buttons">
         <button class="btn" onclick="downloadPNG()">PNG ডাউনলোড</button>
         <button class="btn" onclick="openImageNewTab()">ছবিটি খুলুন</button>
-        <button class="btn" onclick="resetPhotos()">রিসেট</button>
+        <button class="btn" onclick="resetAll()" style="background:#555;">রিসেট</button>
     </div>
 
-    <!-- Zoom Sliders -->
+    <!-- Zoom Slider -->
     <div class="adjust-controls">
-        <div class="slider-row">
-            <span>বাম ছবি জুম:</span>
-            <input type="range" id="leftZoom" min="0.5" max="3" step="0.05" value="1" oninput="updateZoom('left', this.value)">
-        </div>
-        <div class="slider-row">
-            <span>ডান ছবি জুম:</span>
-            <input type="range" id="rightZoom" min="0.5" max="3" step="0.05" value="1" oninput="updateZoom('right', this.value)">
-        </div>
+        <span>ছবি জুম:</span>
+        <input type="range" id="photoZoom" min="0.5" max="3" step="0.05" value="1" oninput="updateZoom(this.value)">
     </div>
 
     <!-- Canvas Preview -->
@@ -265,7 +243,7 @@
     </div>
 
     <div class="instructions">
-        নাম ও জেলা উপরের ঘরে লিখুন — ছবিতে বসবে। ছবি আপলোড করলে ফ্রেমে বসবে — ছবি টেনে সরিয়ে আর উপরের স্লাইডারে জুম করে মেলান। স্কয়ার ডিজাইন: 1:1। PNG ডাউনলোড বোতামে 1080×1080 ছবি নামবে।
+        ছবি আপলোড করে বৃত্তের ভেতরে আঙুল দিয়ে টেনে পজিশন ও উপরের স্লাইডার দিয়ে জুম ঠিক করুন। নাম ও জেলা লিখলে নিচে সুন্দরভাবে বসে যাবে।
     </div>
 </div>
 
@@ -273,31 +251,24 @@
     const canvas = document.getElementById('frameCanvas');
     const ctx = canvas.getContext('2d');
 
-    let photos = {
-        left: { img: null, x: 0, y: 0, scale: 1 },
-        right: { img: null, x: 0, y: 0, scale: 1 }
-    };
+    let userPhoto = { img: null, x: 0, y: 0, scale: 1 };
+    let bgImg = null;
 
-    let assets = { logo: null, bg: null };
+    // বৃত্তাকার ছবির এরিয়া (Center: 540, Radius: 320)
+    const circleClip = { cx: 540, cy: 370, r: 310 };
 
-    // ছবি রাখার বড় জায়গা নির্ধারণ (যাতে কোনো লেখা বা জায়গা নষ্ট না হয়)
-    const leftBox = { x: 60, y: 310, w: 465, h: 485, r: 25 };
-    const rightBox = { x: 555, y: 310, w: 465, h: 485, r: 25 };
-
-    let draggingSide = null;
-    let dragStartX = 0;
-    let dragStartY = 0;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
 
     window.onload = () => {
-        const savedCfg = JSON.parse(localStorage.getItem('frameConfig'));
+        const savedCfg = JSON.parse(localStorage.getItem('circleFrameCfg'));
         if (savedCfg) {
             document.getElementById('cfgMainTitle').value = savedCfg.mainTitle || '';
             document.getElementById('cfgSubTitle').value = savedCfg.subTitle || '';
-            document.getElementById('cfgLeftLabel').value = savedCfg.leftLabel || '';
-            document.getElementById('cfgRightLabel').value = savedCfg.rightLabel || '';
-            document.getElementById('cfgDateText').value = savedCfg.dateText || '';
-            document.getElementById('cfgBrandName').value = savedCfg.brandName || '';
-            document.getElementById('cfgSlogan').value = savedCfg.slogan || '';
+            document.getElementById('cfgDate').value = savedCfg.date || '';
+            document.getElementById('cfgLocation').value = savedCfg.location || '';
+            document.getElementById('cfgOrgName').value = savedCfg.orgName || '';
         }
         renderCanvas();
     };
@@ -310,24 +281,22 @@
         const cfg = {
             mainTitle: document.getElementById('cfgMainTitle').value,
             subTitle: document.getElementById('cfgSubTitle').value,
-            leftLabel: document.getElementById('cfgLeftLabel').value,
-            rightLabel: document.getElementById('cfgRightLabel').value,
-            dateText: document.getElementById('cfgDateText').value,
-            brandName: document.getElementById('cfgBrandName').value,
-            slogan: document.getElementById('cfgSlogan').value
+            date: document.getElementById('cfgDate').value,
+            location: document.getElementById('cfgLocation').value,
+            orgName: document.getElementById('cfgOrgName').value
         };
-        localStorage.setItem('frameConfig', JSON.stringify(cfg));
+        localStorage.setItem('circleFrameCfg', JSON.stringify(cfg));
         renderCanvas();
     }
 
-    function uploadAsset(e, type) {
+    function uploadBg(e) {
         const file = e.target.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = (event) => {
             const img = new Image();
             img.onload = () => {
-                assets[type] = img;
+                bgImg = img;
                 renderCanvas();
             };
             img.src = event.target.result;
@@ -335,15 +304,15 @@
         reader.readAsDataURL(file);
     }
 
-    function loadUserPhoto(e, side) {
+    function loadUserPhoto(e) {
         const file = e.target.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = (event) => {
             const img = new Image();
             img.onload = () => {
-                photos[side] = { img: img, x: 0, y: 0, scale: 1 };
-                document.getElementById(side + 'Zoom').value = 1;
+                userPhoto = { img: img, x: 0, y: 0, scale: 1 };
+                document.getElementById('photoZoom').value = 1;
                 renderCanvas();
             };
             img.src = event.target.result;
@@ -351,240 +320,165 @@
         reader.readAsDataURL(file);
     }
 
-    function updateZoom(side, val) {
-        photos[side].scale = parseFloat(val);
+    function updateZoom(val) {
+        userPhoto.scale = parseFloat(val);
         renderCanvas();
     }
 
-    function resetPhotos() {
-        photos.left = { img: null, x: 0, y: 0, scale: 1 };
-        photos.right = { img: null, x: 0, y: 0, scale: 1 };
-        document.getElementById('leftZoom').value = 1;
-        document.getElementById('rightZoom').value = 1;
+    function resetAll() {
+        userPhoto = { img: null, x: 0, y: 0, scale: 1 };
+        document.getElementById('photoZoom').value = 1;
         document.getElementById('userName').value = '';
         document.getElementById('userDistrict').value = '';
         renderCanvas();
     }
 
-    function roundRect(ctx, x, y, width, height, radius) {
-        ctx.beginPath();
-        ctx.moveTo(x + radius, y);
-        ctx.lineTo(x + width - radius, y);
-        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-        ctx.lineTo(x + width, y + height - radius);
-        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-        ctx.lineTo(x + radius, y + height);
-        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-        ctx.lineTo(x, y + radius);
-        ctx.quadraticCurveTo(x, y, x + radius, y);
-        ctx.closePath();
-    }
-
-    function drawPhotoInBox(photoObj, box, placeholderText) {
-        ctx.save();
-        roundRect(ctx, box.x, box.y, box.w, box.h, box.r);
-        ctx.clip();
-
-        ctx.fillStyle = '#e8e2d5';
-        ctx.fillRect(box.x, box.y, box.w, box.h);
-
-        if (photoObj.img) {
-            const img = photoObj.img;
-            const boxAspect = box.w / box.h;
-            const imgAspect = img.width / img.height;
-            let drawW, drawH;
-
-            if (imgAspect > boxAspect) {
-                drawH = box.h;
-                drawW = box.h * imgAspect;
-            } else {
-                drawW = box.w;
-                drawH = box.w / imgAspect;
-            }
-
-            drawW *= photoObj.scale;
-            drawH *= photoObj.scale;
-
-            const centerX = box.x + box.w / 2 + photoObj.x;
-            const centerY = box.y + box.h / 2 + photoObj.y;
-
-            ctx.drawImage(img, centerX - drawW / 2, centerY - drawH / 2, drawW, drawH);
-        } else {
-            ctx.fillStyle = '#6b5a4e';
-            ctx.font = '600 26px "Anek Bangla", sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(placeholderText, box.x + box.w / 2, box.y + box.h / 2);
-        }
-        ctx.restore();
-
-        ctx.save();
-        roundRect(ctx, box.x, box.y, box.w, box.h, box.r);
-        ctx.lineWidth = 8;
-        ctx.strokeStyle = '#e8c058';
-        ctx.stroke();
-        ctx.restore();
-    }
-
     function renderCanvas() {
         const mainTitle = document.getElementById('cfgMainTitle').value;
         const subTitle = document.getElementById('cfgSubTitle').value;
-        const leftLabel = document.getElementById('cfgLeftLabel').value;
-        const rightLabel = document.getElementById('cfgRightLabel').value;
-        const dateText = document.getElementById('cfgDateText').value;
-        const brandName = document.getElementById('cfgBrandName').value;
-        const slogan = document.getElementById('cfgSlogan').value;
+        const dateStr = document.getElementById('cfgDate').value;
+        const locationStr = document.getElementById('cfgLocation').value;
+        const orgName = document.getElementById('cfgOrgName').value;
 
         const userName = document.getElementById('userName').value.trim();
         const userDistrict = document.getElementById('userDistrict').value.trim();
 
         ctx.clearRect(0, 0, 1080, 1080);
 
-        // 1. Background
-        if (assets.bg) {
-            ctx.drawImage(assets.bg, 0, 0, 1080, 1080);
-            ctx.fillStyle = 'rgba(45, 12, 12, 0.55)';
-            ctx.fillRect(0, 0, 1080, 1080);
+        // 1. Background (Top Light, Bottom Red Wave Theme)
+        if (bgImg) {
+            ctx.drawImage(bgImg, 0, 0, 1080, 1080);
         } else {
-            const grad = ctx.createLinearGradient(0, 0, 0, 1080);
-            grad.addColorStop(0, '#5a1414');
-            grad.addColorStop(0.5, '#7a2020');
-            grad.addColorStop(1, '#3d0c0c');
-            ctx.fillStyle = grad;
+            ctx.fillStyle = '#f8f4ec';
             ctx.fillRect(0, 0, 1080, 1080);
         }
 
-        // 2. Top Main Banner
+        // 2. Circular Photo Area Clipping & Drawing
         ctx.save();
-        roundRect(ctx, 80, 45, 920, 105, 50);
-        ctx.fillStyle = '#4a1010';
+        ctx.beginPath();
+        ctx.arc(circleClip.cx, circleClip.cy, circleClip.r, 0, Math.PI * 2);
+        ctx.clip();
+
+        ctx.fillStyle = '#d5cbb5';
+        ctx.fillRect(0, 0, 1080, 1080);
+
+        if (userPhoto.img) {
+            const img = userPhoto.img;
+            const diameter = circleClip.r * 2;
+            const imgAspect = img.width / img.height;
+            let drawW, drawH;
+
+            if (imgAspect > 1) {
+                drawH = diameter;
+                drawW = diameter * imgAspect;
+            } else {
+                drawW = diameter;
+                drawH = diameter / imgAspect;
+            }
+
+            drawW *= userPhoto.scale;
+            drawH *= userPhoto.scale;
+
+            const centerX = circleClip.cx + userPhoto.x;
+            const centerY = circleClip.cy + userPhoto.y;
+
+            ctx.drawImage(img, centerX - drawW / 2, centerY - drawH / 2, drawW, drawH);
+        } else {
+            ctx.fillStyle = '#6b5a4e';
+            ctx.font = '700 32px "Anek Bangla", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('আপনার ছবি এখানে দিন', circleClip.cx, circleClip.cy);
+        }
+        ctx.restore();
+
+        // Golden Circular Border
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(circleClip.cx, circleClip.cy, circleClip.r, 0, Math.PI * 2);
+        ctx.lineWidth = 14;
+        ctx.strokeStyle = '#f2c94c';
+        ctx.stroke();
+        ctx.restore();
+
+        // 3. Bottom Red Wave Banner Section
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(0, 620);
+        ctx.bezierCurveTo(300, 520, 780, 520, 1080, 620);
+        ctx.lineTo(1080, 1080);
+        ctx.lineTo(0, 1080);
+        ctx.closePath();
+        ctx.fillStyle = '#8B0000';
         ctx.fill();
-        ctx.lineWidth = 6;
+
+        // Inner Red Accent Overlay
+        ctx.lineWidth = 8;
+        ctx.strokeStyle = '#f2c94c';
+        ctx.stroke();
+        ctx.restore();
+
+        // 4. Main Title Banner (White Curved/Pill Text Area)
+        ctx.save();
+        ctx.beginPath();
+        ctx.roundRect(140, 640, 800, 120, 25);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+        ctx.lineWidth = 4;
         ctx.strokeStyle = '#f2c94c';
         ctx.stroke();
 
-        ctx.fillStyle = '#f2c94c';
-        ctx.font = '700 50px "Anek Bangla", sans-serif';
+        ctx.fillStyle = '#8B0000';
+        ctx.font = '800 60px "Anek Bangla", sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(mainTitle, 540, 100);
+        ctx.fillText(mainTitle, 500, 700);
+
+        // Year/Sub badge inside title
+        ctx.fillStyle = '#d92525';
+        ctx.font = '700 32px "Anek Bangla", sans-serif';
+        ctx.fillText(subTitle, 830, 700);
         ctx.restore();
 
-        // 3. Sub-title Pill
-        ctx.save();
-        roundRect(ctx, 240, 175, 600, 70, 35);
-        ctx.fillStyle = '#fdf3d0';
-        ctx.fill();
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = '#e0b038';
-        ctx.stroke();
+        // 5. Details Section (Date & Organization)
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '700 34px "Anek Bangla", sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(dateStr, 160, 805);
 
-        ctx.fillStyle = '#3b150e';
-        ctx.font = '700 38px "Anek Bangla", sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(subTitle, 540, 212);
-        ctx.restore();
+        ctx.font = '700 46px "Anek Bangla", sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(orgName, 160, 875);
 
-        // 4. Photo Boxes (बড় জায়গা)
-        drawPhotoInBox(photos.left, leftBox, 'আগের ছবি দিন');
-        drawPhotoInBox(photos.right, rightBox, 'পরের ছবি দিন');
+        ctx.font = '600 26px "Anek Bangla", sans-serif';
+        ctx.fillStyle = '#f5e6c8';
+        ctx.fillText(locationStr, 160, 925);
 
-        // 5. Labels under Photo Boxes
-        ctx.save();
-        roundRect(ctx, leftBox.x, leftBox.y + leftBox.h - 55, leftBox.w, 55, 18);
-        ctx.fillStyle = 'rgba(74, 16, 16, 0.9)';
-        ctx.fill();
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = '#e8c058';
-        ctx.stroke();
-        ctx.fillStyle = '#fff';
-        ctx.font = '700 28px "Anek Bangla", sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(leftLabel, leftBox.x + leftBox.w / 2, leftBox.y + leftBox.h - 22);
-
-        roundRect(ctx, rightBox.x, rightBox.y + rightBox.h - 55, rightBox.w, 55, 18);
-        ctx.fillStyle = 'rgba(74, 16, 16, 0.9)';
-        ctx.fill();
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = '#e8c058';
-        ctx.stroke();
-        ctx.fillStyle = '#fff';
-        ctx.fillText(rightLabel, rightBox.x + rightBox.w / 2, rightBox.y + rightBox.h - 22);
-        ctx.restore();
-
-        // 6. User Name & District Display
+        // 6. User Name & District Display (If entered)
         if (userName || userDistrict) {
             ctx.save();
-            roundRect(ctx, 150, 815, 780, 60, 30);
+            ctx.beginPath();
+            ctx.roundRect(150, 960, 780, 65, 30);
             ctx.fillStyle = '#fff9e6';
             ctx.fill();
             ctx.lineWidth = 3;
             ctx.strokeStyle = '#f2c94c';
             ctx.stroke();
 
-            let displayInfo = userName;
-            if (userName && userDistrict) displayInfo += ` — জেলা: ${userDistrict}`;
-            else if (userDistrict) displayInfo = `জেলা: ${userDistrict}`;
+            let nameDisplay = userName;
+            if (userName && userDistrict) nameDisplay += ` (${userDistrict})`;
+            else if (userDistrict) nameDisplay = `জেলা: ${userDistrict}`;
 
-            ctx.fillStyle = '#4a1010';
-            ctx.font = '700 30px "Anek Bangla", sans-serif';
+            ctx.fillStyle = '#8B0000';
+            ctx.font = '700 32px "Anek Bangla", sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(displayInfo, 540, 847);
+            ctx.fillText(nameDisplay, 540, 993);
             ctx.restore();
         }
-
-        // 7. Date / Event Banner
-        const dateY = (userName || userDistrict) ? 890 : 835;
-        ctx.save();
-        roundRect(ctx, 180, dateY, 720, 52, 26);
-        ctx.fillStyle = '#4a1010';
-        ctx.fill();
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = '#e8c058';
-        ctx.stroke();
-
-        ctx.fillStyle = '#f2c94c';
-        ctx.font = '600 26px "Anek Bangla", sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(dateText, 540, dateY + 28);
-        ctx.restore();
-
-        // 8. Footer Branding Bar
-        ctx.save();
-        ctx.fillStyle = '#2b0808';
-        ctx.fillRect(0, 985, 1080, 95);
-        ctx.fillStyle = '#e8c058';
-        ctx.fillRect(0, 985, 1080, 4);
-
-        roundRect(ctx, 45, 1002, 410, 60, 30);
-        ctx.fillStyle = '#fff';
-        ctx.fill();
-
-        if (assets.logo) {
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(80, 1032, 22, 0, Math.PI * 2);
-            ctx.clip();
-            ctx.drawImage(assets.logo, 58, 1010, 44, 44);
-            ctx.restore();
-        }
-
-        ctx.fillStyle = '#3b150e';
-        ctx.font = '700 24px "Anek Bangla", sans-serif';
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(brandName, assets.logo ? 112 : 70, 1034);
-
-        ctx.fillStyle = '#f5e6c8';
-        ctx.font = '600 22px "Anek Bangla", sans-serif';
-        ctx.textAlign = 'right';
-        ctx.fillText(slogan, 1035, 1034);
-        ctx.restore();
     }
 
+    // Touch & Mouse Dragging for Circular Photo
     function getCanvasCoords(e) {
         const rect = canvas.getBoundingClientRect();
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -595,34 +489,27 @@
         };
     }
 
-    function isInside(pos, box) {
-        return pos.x >= box.x && pos.x <= box.x + box.w && pos.y >= box.y && pos.y <= box.y + box.h;
-    }
-
     function startDrag(e) {
         const pos = getCanvasCoords(e);
-        if (isInside(pos, leftBox) && photos.left.img) {
-            draggingSide = 'left';
-        } else if (isInside(pos, rightBox) && photos.right.img) {
-            draggingSide = 'right';
-        }
-        if (draggingSide) {
-            dragStartX = pos.x - photos[draggingSide].x;
-            dragStartY = pos.y - photos[draggingSide].y;
+        const dist = Math.sqrt(Math.pow(pos.x - circleClip.cx, 2) + Math.pow(pos.y - circleClip.cy, 2));
+        if (dist <= circleClip.r && userPhoto.img) {
+            isDragging = true;
+            startX = pos.x - userPhoto.x;
+            startY = pos.y - userPhoto.y;
         }
     }
 
     function onDrag(e) {
-        if (!draggingSide) return;
+        if (!isDragging) return;
         e.preventDefault();
         const pos = getCanvasCoords(e);
-        photos[draggingSide].x = pos.x - dragStartX;
-        photos[draggingSide].y = pos.y - dragStartY;
+        userPhoto.x = pos.x - startX;
+        userPhoto.y = pos.y - startY;
         renderCanvas();
     }
 
     function endDrag() {
-        draggingSide = null;
+        isDragging = false;
     }
 
     canvas.addEventListener('mousedown', startDrag);
@@ -635,7 +522,7 @@
 
     function downloadPNG() {
         const link = document.createElement('a');
-        link.download = 'photo-frame-1080x1080.png';
+        link.download = 'circular-frame-1080x1080.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
     }
