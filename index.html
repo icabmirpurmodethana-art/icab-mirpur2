@@ -5,11 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>কেন্দ্রীয় সম্মেলন ২০২৭ - প্রোফাইল ফ্রেম মেকার</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link href="https://fonts.googleapis.com/css2?family=SolaimanLipi:wght@400;700&display=swap" rel="stylesheet">
+    <!-- ক্যালিগ্রাফিক ও স্টাইলিশ বাংলা ফন্ট (Galada এবং Anek Bangla) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@500;700;800&family=Galada&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'SolaimanLipi', sans-serif;
+            font-family: 'Anek Bangla', sans-serif;
             background-color: #0f172a;
+        }
+        .calligraphic-font {
+            font-family: 'Galada', cursive;
         }
     </style>
 </head>
@@ -29,12 +35,12 @@
             <canvas id="twibbonCanvas" width="1000" height="1000" class="w-full h-full object-contain cursor-move"></canvas>
             
             <!-- Loading Indicator -->
-            <div id="loader" class="absolute inset-0 bg-black/70 flex flex-col items-center justify-center text-white text-sm hidden">
+            <div id="loader" class="absolute inset-0 bg-black/70 flex flex-col items-center justify-center text-white text-sm">
                 <svg class="animate-spin h-8 w-8 text-amber-500 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
                 </svg>
-                ফ্রেম লোড হচ্ছে...
+                ফন্ট ও ফ্রেম লোড হচ্ছে...
             </div>
         </div>
 
@@ -86,10 +92,10 @@
         let userImage = null;
         const CANVAS_SIZE = 1000;
         
-        // বড় প্রোফাইল ছবির জন্য বৃত্তের মাপ ও অবস্থান (Large Circle for Profile Photo)
+        // বড় প্রোফাইল ছবির জন্য বৃত্তের মাপ ও অবস্থান
         const maskX = 500;
         const maskY = 415;
-        const maskRadius = 385; // বৃত্তটি অনেক বড় করা হয়েছে যাতে পুরো প্রোফাইল ছবি সুন্দরভাবে দেখা যায়
+        const maskRadius = 385;
 
         let imgState = {
             scale: 1,
@@ -98,8 +104,14 @@
             offsetY: 0
         };
 
-        function loadFrame() {
+        // ফন্ট লোড হওয়া নিশ্চিত করে ক্যানভাস রেন্ডার করা
+        async function loadFrame() {
             loader.classList.remove('hidden');
+            try {
+                await document.fonts.ready;
+            } catch (e) {
+                console.log('Font load fallback');
+            }
             drawComposite();
             loader.classList.add('hidden');
         }
@@ -107,7 +119,7 @@
         function drawComposite() {
             ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-            // ১. বাইরের ব্যাকগ্রাউন্ড (ছবির বাইরের অংশ - আপনার ২য় ছবির মতো হালকা ধূসর-সাদা শেড)
+            // ১. বাইরের ব্যাকগ্রাউন্ড
             const outerGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_SIZE);
             outerGrad.addColorStop(0, '#cbd5e1');
             outerGrad.addColorStop(0.6, '#e2e8f0');
@@ -123,7 +135,6 @@
                 ctx.closePath();
                 ctx.clip();
 
-                // ছবির পেছনে সাদা ব্যাকগ্রাউন্ড
                 ctx.fillStyle = "#ffffff";
                 ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
@@ -139,7 +150,6 @@
                 ctx.restore();
                 ctx.restore();
             } else {
-                // ছবি আপলোড করার আগের প্লেসহোল্ডার বৃত্ত
                 ctx.save();
                 ctx.beginPath();
                 ctx.arc(maskX, maskY, maskRadius, 0, Math.PI * 2, true);
@@ -152,10 +162,10 @@
                 ctx.restore();
 
                 ctx.fillStyle = "#475569";
-                ctx.font = "bold 36px 'SolaimanLipi', sans-serif";
+                ctx.font = "bold 36px 'Anek Bangla', sans-serif";
                 ctx.textAlign = "center";
                 ctx.fillText("আপনার প্রোফাইল ছবি এখানে বসবে", maskX, maskY - 20);
-                ctx.font = "24px 'SolaimanLipi', sans-serif";
+                ctx.font = "24px 'Anek Bangla', sans-serif";
                 ctx.fillStyle = "#64748b";
                 ctx.fillText("(নিচ থেকে ছবি সিলেক্ট করুন)", maskX, maskY + 25);
             }
@@ -165,21 +175,21 @@
         }
 
         function drawOverlayGraphics() {
-            // ওপরে বাম পাশে: "□ মুক্তির মূলমন্ত্র[span_2](start_span)"[span_2](end_span)
+            // ওপরে বাম পাশে: "□ মুক্তির মূলমন্ত্র[span_1](start_span)"[span_1](end_span)
             ctx.fillStyle = "#0f172a";
-            ctx.font = "bold 24px 'SolaimanLipi', sans-serif";
+            ctx.font = "bold 24px 'Anek Bangla', sans-serif";
             ctx.textAlign = "left";
             ctx.fillText("□ মুক্তির মূলমন্ত্র", 40, 55);
 
-            // ওপরে ডান পাশে: "ইসলামী শাসনতন্ত্র □[span_3](start_span)"[span_3](end_span)
+            // ওপরে ডান পাশে: "ইসলামী শাসনতন্ত্র □[span_2](start_span)"[span_2](end_span)
             ctx.textAlign = "right";
             ctx.fillText("ইসলামী শাসনতন্ত্র □", 960, 55);
 
-            // নিচের মূল লাল ব্যানার বক্স (প্রোফাইল ছবির নিচের অংশে সুন্দরভাবে বসানো, যাতে মুখ ঢেকে না যায়)
+            // নিচের মূল লাল ব্যানার বক্স
             ctx.save();
             ctx.beginPath();
             ctx.moveTo(45, 670);
-            ctx.quadraticCurveTo(500, 625, 955, 670); // ওপরে হালকা কার্ভ ডিজাইন[span_4](start_span)[span_4](end_span)
+            ctx.quadraticCurveTo(500, 625, 955, 670);
             ctx.lineTo(955, 935);
             ctx.lineTo(45, 935);
             ctx.closePath();
@@ -192,7 +202,7 @@
             ctx.fill();
             ctx.restore();
 
-            // বাম পাশের তারিখ ও স্থানের বক্স (সকাল ৯টা বাদ দেওয়া হয়েছে)
+            // বাম পাশের তারিখ ও স্থানের বক্স
             ctx.fillStyle = "#5c0b0b";
             ctx.beginPath();
             ctx.roundRect(60, 680, 235, 235, 12);
@@ -201,17 +211,17 @@
             ctx.lineWidth = 2;
             ctx.stroke();
 
-            // তারিখ: ১১ ডিসেম্বর '২৬, শুক্রবার[span_5](start_span)[span_5](end_span)
+            // তারিখ: ১১ ডিসেম্বর '২৬, শুক্রবার[span_3](start_span)[span_3](end_span)
             ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 54px 'SolaimanLipi', sans-serif";
+            ctx.font = "800 54px 'Anek Bangla', sans-serif";
             ctx.textAlign = "center";
             ctx.fillText("১১", 177, 735);
 
-            ctx.font = "bold 24px 'SolaimanLipi', sans-serif";
+            ctx.font = "700 24px 'Anek Bangla', sans-serif";
             ctx.fillStyle = "#fde047";
             ctx.fillText("ডিসেম্বর '২৬", 177, 768);
 
-            ctx.font = "19px 'SolaimanLipi', sans-serif";
+            ctx.font = "500 20px 'Anek Bangla', sans-serif";
             ctx.fillStyle = "#f1f5f9";
             ctx.fillText("শুক্রবার", 177, 795);
 
@@ -222,17 +232,17 @@
             ctx.lineTo(265, 808);
             ctx.stroke();
 
-            // স্থান: জাতীয় ক্রীড়া পরিষদ চত্বর, পল্টন, ঢাকা[span_6](start_span)[span_6](end_span)
+            // স্থান: জাতীয় ক্রীড়া পরিষদ চত্বর, পল্টন, ঢাকা[span_4](start_span)[span_4](end_span)
             ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 19px 'SolaimanLipi', sans-serif";
+            ctx.font = "700 19px 'Anek Bangla', sans-serif";
             ctx.fillText("জাতীয় ক্রীড়া পরিষদ চত্বর", 177, 838);
-            ctx.font = "bold 21px 'SolaimanLipi', sans-serif";
+            ctx.font = "700 21px 'Anek Bangla', sans-serif";
             ctx.fillStyle = "#fde047";
             ctx.fillText("পল্টন, ঢাকা", 177, 870);
 
-            // মাঝখানের মূল শিরোনাম: "কেন্দ্রীয় সম্মেলন ২০২৭[span_7](start_span)"[span_7](end_span)
-            ctx.fillStyle = "#fde047"; // সোনালী হলুদ রঙ
-            ctx.font = "bold 76px 'SolaimanLipi', sans-serif";
+            // মাঝখানের মূল শিরোনাম: "কেন্দ্রীয় সম্মেলন ২০২৭" (ক্যালিগ্রাফিক ও বোল্ড স্টাইল)[span_5](start_span)[span_5](end_span)
+            ctx.fillStyle = "#fde047"; 
+            ctx.font = "800 76px 'Anek Bangla', sans-serif";
             ctx.textAlign = "center";
             ctx.shadowColor = "rgba(0,0,0,0.7)";
             ctx.shadowBlur = 10;
@@ -240,39 +250,42 @@
             ctx.fillText("সম্মেলন", 500, 825);
             ctx.shadowBlur = 0;
 
-            // সাল: ২০২৭[span_8](start_span)[span_8](end_span)
+            // সাল: ২০২৭[span_6](start_span)[span_6](end_span)
             ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 36px 'SolaimanLipi', sans-serif";
+            ctx.font = "800 36px 'Anek Bangla', sans-serif";
             ctx.fillText("২০২৭", 500, 875);
 
-            // ডান পাশের সংগঠনের নাম ও তথ্য[span_9](start_span)[span_9](end_span)[span_10](start_span)[span_10](end_span)
-            ctx.fillStyle = "#5c0b0b";
+            // ডান পাশের সংগঠনের নাম ও তথ্য (আপনার পাঠানো ছবির ক্যালিগ্রাফিক ফন্ট 'Galada' ব্যবহার করে)[span_7](start_span)[span_7](end_span)
+            ctx.fillStyle = "#063b5c"; // ছবির নীলচে ব্যাকগ্রাউন্ডের সাথে সামঞ্জস্যপূর্ণ গাঢ় নীল বক্স[span_8](start_span)[span_8](end_span)
             ctx.beginPath();
             ctx.roundRect(705, 680, 235, 235, 12);
             ctx.fill();
-            ctx.strokeStyle = "rgba(255,255,255,0.2)";
+            ctx.strokeStyle = "rgba(255,255,255,0.25)";
             ctx.lineWidth = 2;
             ctx.stroke();
 
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 25px 'SolaimanLipi', sans-serif";
+            // হালকা আকাশি-সাদা ক্যালিগ্রাফিক লেখা (ছবির রঙ ও ফন্টের মতো)[span_9](start_span)[span_9](end_span)
+            ctx.fillStyle = "#bae6fd"; 
+            ctx.font = "32px 'Galada', cursive";
             ctx.textAlign = "center";
             ctx.fillText("ইসলামী", 822, 725);
-            ctx.font = "bold 29px 'SolaimanLipi', sans-serif";
-            ctx.fillStyle = "#fde047";
-            ctx.fillText("ছাত্র আন্দোলন", 822, 762);
-            ctx.font = "bold 25px 'SolaimanLipi', sans-serif";
-            ctx.fillStyle = "#ffffff";
-            ctx.fillText("বাংলাদেশ", 822, 798);
+            
+            ctx.font = "34px 'Galada', cursive";
+            ctx.fillStyle = "#e0f2fe";
+            ctx.fillText("ছাত্র আন্দোলন", 822, 765);
+            
+            ctx.font = "32px 'Galada', cursive";
+            ctx.fillStyle = "#bae6fd";
+            ctx.fillText("বাংলাদেশ", 822, 805);
 
-            // সোশ্যাল লিংক[span_11](start_span)[span_11](end_span)[span_12](start_span)[span_12](end_span)
+            // সোশ্যাল লিংক[span_10](start_span)[span_10](end_span)[span_11](start_span)[span_11](end_span)
             ctx.font = "14px sans-serif";
             ctx.fillStyle = "#e2e8f0";
-            ctx.fillText("f icabd91  •  icabd91", 822, 845);
+            ctx.fillText("f icabd91  •  icabd91", 822, 850);
             ctx.font = "13px sans-serif";
-            ctx.fillText("chhatraandolan.org", 822, 875);
+            ctx.fillText("chhatraandolan.org", 822, 878);
 
-            // একদম নিচের সাদা ফুটার বার (Twibbonize স্টাইল)[span_13](start_span)[span_13](end_span)
+            // একদম নিচের সাদা ফুটার বার[span_12](start_span)[span_12](end_span)
             ctx.fillStyle = "#ffffff";
             ctx.beginPath();
             ctx.roundRect(660, 945, 300, 42, 20);
@@ -304,7 +317,6 @@
                 const img = new Image();
                 img.onload = function() {
                     userImage = img;
-                    // ছবি আপলোড হলে অটোমেটিক বৃত্তের মাপে ফিট হওয়ার জন্য প্রাথমিক স্কেল নির্ধারণ
                     const minSide = Math.min(img.width, img.height);
                     const initialScale = (maskRadius * 2) / minSide;
                     
