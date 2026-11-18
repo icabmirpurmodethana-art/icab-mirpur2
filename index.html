@@ -3,540 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Photo Frame Generator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <title>ইসলামী ছাত্র আন্দোলন বাংলাদেশ - কেন্দ্রীয় সম্মেলন ২০২৬ ফ্রেম</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Anek Bangla', sans-serif;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
+        
         body {
-            background-color: #f4f1ea;
-            color: #2b1208;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background-color: #f0f2f5;
+            font-family: 'Hind Siliguri', sans-serif;
         }
-        .container {
-            width: 100%;
-            max-width: 480px;
-        }
-        .header-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: #8B0000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .settings-toggle {
-            background: #e2d8c3;
-            border: 1px solid #c5b496;
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            color: #8B0000;
-        }
-        /* Settings Panel */
-        .settings-panel {
-            display: none;
-            background: #fff;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #d4c4a8;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        .settings-panel.active {
-            display: block;
-        }
-        .settings-panel h3 {
-            font-size: 15px;
-            margin-bottom: 10px;
-            color: #8B0000;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
-        }
-        .setting-group {
-            margin-bottom: 10px;
-        }
-        .setting-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 3px;
-        }
-        .setting-group input[type="text"], .setting-group input[type="file"] {
-            width: 100%;
-            padding: 7px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-        /* Controls */
-        .controls-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .row-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        .file-btn {
-            background: #fff;
-            border: 1.5px solid #d4c4a8;
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            color: #2b1208;
-            display: block;
-        }
-        .file-btn input {
-            display: none;
-        }
-        .input-box {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1.5px solid #d4c4a8;
-            border-radius: 8px;
-            font-size: 14px;
-            background: #fff;
-            outline: none;
-        }
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-        .btn {
-            padding: 10px 14px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            color: #fff;
-            background-color: #8B0000;
-            flex: 1;
-            text-align: center;
-        }
-        /* Zoom Control */
-        .adjust-controls {
-            background: #fff;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            border: 1px solid #d4c4a8;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-        .adjust-controls input[type="range"] {
-            flex: 1;
-            accent-color: #8B0000;
-        }
-        /* Canvas Preview */
-        .canvas-wrapper {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            background: #ddd;
-            border-radius: 8px;
+        .canvas-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            margin: 0 auto;
+            border-radius: 50%;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            margin-bottom: 12px;
-            touch-action: none;
-        }
-        canvas {
-            width: 100%;
-            height: 100%;
-            display: block;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            background: #e2e8f0;
             cursor: grab;
         }
-        .instructions {
-            font-size: 13px;
-            line-height: 1.5;
-            color: #4a3b32;
-            background: #eae4d7;
-            padding: 10px;
-            border-radius: 8px;
+        .canvas-container:active {
+            cursor: grabbing;
+        }
+        @media (min-width: 400px) {
+            .canvas-container {
+                width: 360px;
+                height: 360px;
+            }
         }
     </style>
 </head>
-<body>
+<body class="min-h-screen py-6 px-4 flex flex-col items-center justify-center">
 
-<div class="container">
-    <div class="header-title">
-        <span id="pageTitleDisplay">Circular Photo Frame Generator</span>
-        <button class="settings-toggle" onclick="toggleSettings()">⚙️ ফ্রেম এডিট</button>
+    <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-5 text-center">
+        <h1 class="text-lg font-bold text-blue-900 mb-1">কেন্দ্রীয় সম্মেলন ২০২৬ ফ্রেম</h1>
+        <p class="text-xs text-gray-500 mb-3">ইসলামী ছাত্র আন্দোলন বাংলাদেশ</p>
+
+        <!-- Preview Area -->
+        <div class="canvas-container mb-3" id="canvasBox">
+            <canvas id="frameCanvas" width="800" height="800" class="w-full h-full object-cover"></canvas>
+        </div>
+        <p class="text-[11px] text-gray-400 mb-4">💡 ছবিতে আঙুল দিয়ে ডানে-বায়ে বা উপরে-নিচে সরিয়ে পজিশন ঠিক করুন</p>
+
+        <!-- Controls -->
+        <div class="space-y-3 mb-4 text-left bg-gray-50 p-3 rounded-xl border border-gray-100">
+            <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">আপনার ছবি সিলেক্ট করুন:</label>
+                <input type="file" id="imageUpload" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+            </div>
+
+            <div>
+                <div class="flex justify-between text-xs font-semibold text-gray-700 mb-1">
+                    <span>জুম করুন (ছোট/বড়):</span>
+                </div>
+                <input type="range" id="zoomRange" min="0.4" max="3" step="0.02" value="1" class="w-full accent-blue-700">
+            </div>
+        </div>
+
+        <!-- Download Button -->
+        <button id="downloadBtn" class="w-full bg-[#1b365d] hover:bg-[#132642] text-white font-semibold py-3 px-4 rounded-xl shadow-lg transition duration-200 text-sm flex items-center justify-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            ফ্রেমসহ ছবি ডাউনলোড করুন
+        </button>
     </div>
 
-    <!-- Customizer Panel -->
-    <div class="settings-panel" id="settingsPanel">
-        <h3>ফ্রেমের তথ্য ও লেখা পরিবর্তন করুন</h3>
-        <div class="setting-group">
-            <label>প্রধান শিরোনাম (বড় লেখা):</label>
-            <input type="text" id="cfgMainTitle" value="কেন্দ্রীয় সম্মেলন" oninput="saveAndRender()">
-        </div>
-        <div class="setting-group">
-            <label>উপ-শিরোনাম / সাল:</label>
-            <input type="text" id="cfgSubTitle" value="২০২৬" oninput="saveAndRender()">
-        </div>
-        <div class="setting-group">
-            <label>তারিখ ও সময়:</label>
-            <input type="text" id="cfgDate" value="৬ ডিসেম্বর ২০২৬ | শুক্রবার, সকাল ৯টা" oninput="saveAndRender()">
-        </div>
-        <div class="setting-group">
-            <label>স্থান / মুক্তমঞ্চ:</label>
-            <input type="text" id="cfgLocation" value="মুক্তমঞ্চ, সোহরাওয়ার্দী উদ্যান, ঢাকা" oninput="saveAndRender()">
-        </div>
-        <div class="setting-group">
-            <label>সংগঠন / প্রতিষ্ঠানের নাম:</label>
-            <input type="text" id="cfgOrgName" value="ইসলামী ছাত্র আন্দোলন বাংলাদেশ" oninput="saveAndRender()">
-        </div>
-        <div class="setting-group">
-            <label>ব্যাকগ্রাউন্ড ছবি পরিবর্তন করুন:</label>
-            <input type="file" accept="image/*" onchange="uploadBg(event)">
-        </div>
-    </div>
+    <!-- Script -->
+    <script>
+        const canvas = document.getElementById('frameCanvas');
+        const ctx = canvas.getContext('2d');
+        const imageUpload = document.getElementById('imageUpload');
+        const zoomRange = document.getElementById('zoomRange');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const canvasBox = document.getElementById('canvasBox');
 
-    <!-- User Inputs -->
-    <div class="controls-grid">
-        <label class="file-btn">
-            🖼️ আপনার ছবি দিন
-            <input type="file" accept="image/*" onchange="loadUserPhoto(event)">
-        </label>
-        <div class="row-2">
-            <input type="text" class="input-box" id="userName" placeholder="আপনার নাম" oninput="renderCanvas()">
-            <input type="text" class="input-box" id="userDistrict" placeholder="জেলা" oninput="renderCanvas()">
-        </div>
-    </div>
+        let userImage = null;
+        let imgX = 400;
+        let imgY = 310;
+        let scale = 1;
+        let isDragging = false;
+        let startX, startY;
 
-    <div class="action-buttons">
-        <button class="btn" onclick="downloadPNG()">PNG ডাউনলোড</button>
-        <button class="btn" onclick="openImageNewTab()">ছবিটি খুলুন</button>
-        <button class="btn" onclick="resetAll()" style="background:#555;">রিসেট</button>
-    </div>
-
-    <!-- Zoom Slider -->
-    <div class="adjust-controls">
-        <span>ছবি জুম:</span>
-        <input type="range" id="photoZoom" min="0.5" max="3" step="0.05" value="1" oninput="updateZoom(this.value)">
-    </div>
-
-    <!-- Canvas Preview -->
-    <div class="canvas-wrapper">
-        <canvas id="frameCanvas" width="1080" height="1080"></canvas>
-    </div>
-
-    <div class="instructions">
-        ছবি আপলোড করে বৃত্তের ভেতরে আঙুল দিয়ে টেনে পজিশন ও উপরের স্লাইডার দিয়ে জুম ঠিক করুন। নাম ও জেলা লিখলে নিচে সুন্দরভাবে বসে যাবে।
-    </div>
-</div>
-
-<script>
-    const canvas = document.getElementById('frameCanvas');
-    const ctx = canvas.getContext('2d');
-
-    let userPhoto = { img: null, x: 0, y: 0, scale: 1 };
-    let bgImg = null;
-
-    // বৃত্তাকার ছবির এরিয়া (Center: 540, Radius: 320)
-    const circleClip = { cx: 540, cy: 370, r: 310 };
-
-    let isDragging = false;
-    let startX = 0;
-    let startY = 0;
-
-    window.onload = () => {
-        const savedCfg = JSON.parse(localStorage.getItem('circleFrameCfg'));
-        if (savedCfg) {
-            document.getElementById('cfgMainTitle').value = savedCfg.mainTitle || '';
-            document.getElementById('cfgSubTitle').value = savedCfg.subTitle || '';
-            document.getElementById('cfgDate').value = savedCfg.date || '';
-            document.getElementById('cfgLocation').value = savedCfg.location || '';
-            document.getElementById('cfgOrgName').value = savedCfg.orgName || '';
-        }
-        renderCanvas();
-    };
-
-    function toggleSettings() {
-        document.getElementById('settingsPanel').classList.toggle('active');
-    }
-
-    function saveAndRender() {
-        const cfg = {
-            mainTitle: document.getElementById('cfgMainTitle').value,
-            subTitle: document.getElementById('cfgSubTitle').value,
-            date: document.getElementById('cfgDate').value,
-            location: document.getElementById('cfgLocation').value,
-            orgName: document.getElementById('cfgOrgName').value
+        // ডিফল্ট ডেমো ছবি লোড
+        let loadedUserImg = new Image();
+        loadedUserImg.crossOrigin = "anonymous";
+        loadedUserImg.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800';
+        loadedUserImg.onload = () => {
+            userImage = loadedUserImg;
+            drawImage();
         };
-        localStorage.setItem('circleFrameCfg', JSON.stringify(cfg));
-        renderCanvas();
-    }
 
-    function uploadBg(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const img = new Image();
-            img.onload = () => {
-                bgImg = img;
-                renderCanvas();
-            };
-            img.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
+        imageUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.onload = function() {
+                        userImage = img;
+                        scale = 1;
+                        zoomRange.value = 1;
+                        imgX = 400;
+                        imgY = 310;
+                        drawImage();
+                    }
+                    img.src = event.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
 
-    function loadUserPhoto(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const img = new Image();
-            img.onload = () => {
-                userPhoto = { img: img, x: 0, y: 0, scale: 1 };
-                document.getElementById('photoZoom').value = 1;
-                renderCanvas();
-            };
-            img.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
+        zoomRange.addEventListener('input', (e) => {
+            scale = parseFloat(e.target.value);
+            drawImage();
+        });
 
-    function updateZoom(val) {
-        userPhoto.scale = parseFloat(val);
-        renderCanvas();
-    }
-
-    function resetAll() {
-        userPhoto = { img: null, x: 0, y: 0, scale: 1 };
-        document.getElementById('photoZoom').value = 1;
-        document.getElementById('userName').value = '';
-        document.getElementById('userDistrict').value = '';
-        renderCanvas();
-    }
-
-    function renderCanvas() {
-        const mainTitle = document.getElementById('cfgMainTitle').value;
-        const subTitle = document.getElementById('cfgSubTitle').value;
-        const dateStr = document.getElementById('cfgDate').value;
-        const locationStr = document.getElementById('cfgLocation').value;
-        const orgName = document.getElementById('cfgOrgName').value;
-
-        const userName = document.getElementById('userName').value.trim();
-        const userDistrict = document.getElementById('userDistrict').value.trim();
-
-        ctx.clearRect(0, 0, 1080, 1080);
-
-        // 1. Background (Top Light, Bottom Red Wave Theme)
-        if (bgImg) {
-            ctx.drawImage(bgImg, 0, 0, 1080, 1080);
-        } else {
-            ctx.fillStyle = '#f8f4ec';
-            ctx.fillRect(0, 0, 1080, 1080);
+        // মাউস ও টাচ ড্র্যাগ ইভেন্ট
+        function startDrag(clientX, clientY) {
+            isDragging = true;
+            startX = clientX - imgX;
+            startY = clientY - imgY;
         }
 
-        // 2. Circular Photo Area Clipping & Drawing
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(circleClip.cx, circleClip.cy, circleClip.r, 0, Math.PI * 2);
-        ctx.clip();
+        function onDrag(clientX, clientY) {
+            if (!isDragging) return;
+            imgX = clientX - startX;
+            imgY = clientY - startY;
+            drawImage();
+        }
 
-        ctx.fillStyle = '#d5cbb5';
-        ctx.fillRect(0, 0, 1080, 1080);
+        canvasBox.addEventListener('mousedown', (e) => startDrag(e.clientX, e.clientY));
+        window.addEventListener('mousemove', (e) => onDrag(e.clientX, e.clientY));
+        window.addEventListener('mouseup', () => { isDragging = false; });
 
-        if (userPhoto.img) {
-            const img = userPhoto.img;
-            const diameter = circleClip.r * 2;
-            const imgAspect = img.width / img.height;
-            let drawW, drawH;
+        canvasBox.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                startDrag(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        });
+        window.addEventListener('touchmove', (e) => {
+            if (!isDragging || e.touches.length !== 1) return;
+            onDrag(e.touches[0].clientX, e.touches[0].clientY);
+        });
+        window.addEventListener('touchend', () => { isDragging = false; });
 
-            if (imgAspect > 1) {
-                drawH = diameter;
-                drawW = diameter * imgAspect;
-            } else {
-                drawW = diameter;
-                drawH = diameter / imgAspect;
+        function drawImage() {
+            ctx.clearRect(0, 0, 800, 800);
+
+            if (userImage) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(400, 310, 270, 0, Math.PI * 2, true);
+                ctx.closePath();
+                ctx.clip();
+
+                ctx.translate(imgX, imgY);
+                ctx.scale(scale, scale);
+                ctx.drawImage(userImage, -userImage.width / 2, -userImage.height / 2);
+                ctx.restore();
             }
 
-            drawW *= userPhoto.scale;
-            drawH *= userPhoto.scale;
-
-            const centerX = circleClip.cx + userPhoto.x;
-            const centerY = circleClip.cy + userPhoto.y;
-
-            ctx.drawImage(img, centerX - drawW / 2, centerY - drawH / 2, drawW, drawH);
-        } else {
-            ctx.fillStyle = '#6b5a4e';
-            ctx.font = '700 32px "Anek Bangla", sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('আপনার ছবি এখানে দিন', circleClip.cx, circleClip.cy);
+            drawExactPosterFrame();
         }
-        ctx.restore();
 
-        // Golden Circular Border
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(circleClip.cx, circleClip.cy, circleClip.r, 0, Math.PI * 2);
-        ctx.lineWidth = 14;
-        ctx.strokeStyle = '#f2c94c';
-        ctx.stroke();
-        ctx.restore();
+        function drawExactPosterFrame() {
+            // ১. ব্যাকগ্রাউন্ড ডার্ক ব্লু
+            ctx.fillStyle = '#0f294a';
+            ctx.fillRect(0, 0, 800, 800);
 
-        // 3. Bottom Red Wave Banner Section
-        ctx.save();
-        ctx.beginPath();
-        ctx.moveTo(0, 620);
-        ctx.bezierCurveTo(300, 520, 780, 520, 1080, 620);
-        ctx.lineTo(1080, 1080);
-        ctx.lineTo(0, 1080);
-        ctx.closePath();
-        ctx.fillStyle = '#8B0000';
-        ctx.fill();
-
-        // Inner Red Accent Overlay
-        ctx.lineWidth = 8;
-        ctx.strokeStyle = '#f2c94c';
-        ctx.stroke();
-        ctx.restore();
-
-        // 4. Main Title Banner (White Curved/Pill Text Area)
-        ctx.save();
-        ctx.beginPath();
-        ctx.roundRect(140, 640, 800, 120, 25);
-        ctx.fillStyle = '#ffffff';
-        ctx.fill();
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = '#f2c94c';
-        ctx.stroke();
-
-        ctx.fillStyle = '#8B0000';
-        ctx.font = '800 60px "Anek Bangla", sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(mainTitle, 500, 700);
-
-        // Year/Sub badge inside title
-        ctx.fillStyle = '#d92525';
-        ctx.font = '700 32px "Anek Bangla", sans-serif';
-        ctx.fillText(subTitle, 830, 700);
-        ctx.restore();
-
-        // 5. Details Section (Date & Organization)
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '700 34px "Anek Bangla", sans-serif';
-        ctx.textAlign = 'left';
-        ctx.fillText(dateStr, 160, 805);
-
-        ctx.font = '700 46px "Anek Bangla", sans-serif';
-        ctx.textAlign = 'left';
-        ctx.fillText(orgName, 160, 875);
-
-        ctx.font = '600 26px "Anek Bangla", sans-serif';
-        ctx.fillStyle = '#f5e6c8';
-        ctx.fillText(locationStr, 160, 925);
-
-        // 6. User Name & District Display (If entered)
-        if (userName || userDistrict) {
+            // ২. ছবির জন্য সাদা সার্কেল ও সোনালী বর্ডার
             ctx.save();
             ctx.beginPath();
-            ctx.roundRect(150, 960, 780, 65, 30);
-            ctx.fillStyle = '#fff9e6';
+            ctx.arc(400, 310, 275, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff';
             ctx.fill();
-            ctx.lineWidth = 3;
-            ctx.strokeStyle = '#f2c94c';
+            ctx.lineWidth = 12;
+            ctx.strokeStyle = '#facc15';
+            ctx.stroke();
+            ctx.restore();
+
+            // ৩. নিচের কার্ভড ডিজাইন
+            ctx.fillStyle = '#0b1d33';
+            ctx.beginPath();
+            ctx.moveTo(0, 480);
+            ctx.bezierCurveTo(200, 440, 600, 440, 800, 480);
+            ctx.lineTo(800, 800);
+            ctx.lineTo(0, 800);
+            ctx.closePath();
+            ctx.fill();
+
+            // ৪. কেন্দ্রীয় সম্মেলন টেক্সট
+            ctx.fillStyle = '#fde047';
+            ctx.font = '700 68px "Hind Siliguri", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            ctx.shadowBlur = 10;
+            ctx.fillText('কেন্দ্রীয় সম্মেলন', 400, 565);
+
+            // ৫. সাল
+            ctx.font = '700 36px "Hind Siliguri", sans-serif';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText('২০২৬', 400, 605);
+            ctx.shadowBlur = 0;
+
+            // ৬. ইনফো প্যানেল
+            ctx.fillStyle = '#162e4d';
+            ctx.beginPath();
+            ctx.roundRect(100, 630, 600, 75, 12);
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#facc15';
             ctx.stroke();
 
-            let nameDisplay = userName;
-            if (userName && userDistrict) nameDisplay += ` (${userDistrict})`;
-            else if (userDistrict) nameDisplay = `জেলা: ${userDistrict}`;
+            // ৭. তারিখ ও স্থান
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '600 22px "Hind Siliguri", sans-serif';
+            ctx.fillText('১১ ডিসেম্বর ’২৬, শুক্রবার, সকাল ৯টা', 400, 660);
+            
+            ctx.font = '600 20px "Hind Siliguri", sans-serif';
+            ctx.fillStyle = '#cbd5e1';
+            ctx.fillText('জাতীয় ক্রীড়া পরিষদ চত্বর, পল্টন, ঢাকা', 400, 690);
 
-            ctx.fillStyle = '#8B0000';
-            ctx.font = '700 32px "Anek Bangla", sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(nameDisplay, 540, 993);
-            ctx.restore();
+            // ৮. সংগঠনের নাম ব্যানার
+            ctx.fillStyle = '#990000';
+            ctx.fillRect(0, 730, 800, 70);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '700 32px "Hind Siliguri", sans-serif';
+            ctx.fillText('ইসলামী ছাত্র আন্দোলন বাংলাদেশ', 400, 777);
         }
-    }
 
-    // Touch & Mouse Dragging for Circular Photo
-    function getCanvasCoords(e) {
-        const rect = canvas.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        return {
-            x: (clientX - rect.left) * (1080 / rect.width),
-            y: (clientY - rect.top) * (1080 / rect.height)
-        };
-    }
-
-    function startDrag(e) {
-        const pos = getCanvasCoords(e);
-        const dist = Math.sqrt(Math.pow(pos.x - circleClip.cx, 2) + Math.pow(pos.y - circleClip.cy, 2));
-        if (dist <= circleClip.r && userPhoto.img) {
-            isDragging = true;
-            startX = pos.x - userPhoto.x;
-            startY = pos.y - userPhoto.y;
-        }
-    }
-
-    function onDrag(e) {
-        if (!isDragging) return;
-        e.preventDefault();
-        const pos = getCanvasCoords(e);
-        userPhoto.x = pos.x - startX;
-        userPhoto.y = pos.y - startY;
-        renderCanvas();
-    }
-
-    function endDrag() {
-        isDragging = false;
-    }
-
-    canvas.addEventListener('mousedown', startDrag);
-    canvas.addEventListener('mousemove', onDrag);
-    window.addEventListener('mouseup', endDrag);
-
-    canvas.addEventListener('touchstart', startDrag, { passive: false });
-    canvas.addEventListener('touchmove', onDrag, { passive: false });
-    window.addEventListener('touchend', endDrag);
-
-    function downloadPNG() {
-        const link = document.createElement('a');
-        link.download = 'circular-frame-1080x1080.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-    }
-
-    function openImageNewTab() {
-        const dataUrl = canvas.toDataURL('image/png');
-        const newTab = window.open();
-        if (newTab) {
-            newTab.document.body.innerHTML = `<img src="${dataUrl}" style="max-width:100%; height:auto;" />`;
-        } else {
-            alert("পপ-আপ ব্লক করা আছে। অনুগ্রহ করে 'PNG ডাউনলোড' বাটন ব্যবহার করুন।");
-        }
-    }
-</script>
-
+        downloadBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = 'Islami-Chatra-Andolan-Conference-Frame.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    </script>
 </body>
 </html>
