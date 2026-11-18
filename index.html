@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>চরমোনাই বাৎসরিক মাহফিল ফ্রেম জেনারেটর</title>
+    <title>ঐতিহাসিক চরমোনাই মাহফিল - ফ্রেম জেনারেটর</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
@@ -16,7 +16,7 @@
             width: 320px;
             height: 320px;
             margin: 0 auto;
-            border-radius: 50%;
+            border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             background: #e2e8f0;
@@ -36,8 +36,8 @@
 <body class="min-h-screen py-6 px-4 flex flex-col items-center justify-center">
 
     <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-5 text-center">
-        <h1 class="text-lg font-bold text-emerald-900 mb-1">চরমোনাই বাৎসরিক মাহফিল</h1>
-        <p class="text-xs text-gray-500 mb-3">২৫, ২৬ ও ২৭ নভেম্বর - ঐতিহাসিক মাহফিল</p>
+        <h1 class="text-lg font-bold text-red-900 mb-1">ঐতিহাসিক চরমোনাই মাহফিল</h1>
+        <p class="text-xs text-gray-500 mb-3">২৫, ২৬ ও ২৭ নভেম্বর - ফ্রেম মেকার</p>
 
         <!-- Preview Area -->
         <div class="canvas-container mb-3" id="canvasBox">
@@ -49,19 +49,19 @@
         <div class="space-y-3 mb-4 text-left bg-gray-50 p-3 rounded-xl border border-gray-100">
             <div>
                 <label class="block text-xs font-semibold text-gray-700 mb-1">আপনার ছবি সিলেক্ট করুন:</label>
-                <input type="file" id="imageUpload" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
+                <input type="file" id="imageUpload" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 cursor-pointer">
             </div>
 
             <div>
                 <div class="flex justify-between text-xs font-semibold text-gray-700 mb-1">
                     <span>জুম করুন (ছোট/বড়):</span>
                 </div>
-                <input type="range" id="zoomRange" min="0.4" max="3" step="0.02" value="1" class="w-full accent-emerald-700">
+                <input type="range" id="zoomRange" min="0.4" max="3" step="0.02" value="1" class="w-full accent-red-700">
             </div>
         </div>
 
         <!-- Download Button -->
-        <button id="downloadBtn" class="w-full bg-[#1b5e20] hover:bg-[#144517] text-white font-semibold py-3 px-4 rounded-xl shadow-lg transition duration-200 text-sm flex items-center justify-center gap-2">
+        <button id="downloadBtn" class="w-full bg-[#990000] hover:bg-[#7a0000] text-white font-semibold py-3 px-4 rounded-xl shadow-lg transition duration-200 text-sm flex items-center justify-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
@@ -80,7 +80,7 @@
 
         let userImage = null;
         let imgX = 400;
-        let imgY = 310;
+        let imgY = 250;
         let scale = 1;
         let isDragging = false;
         let startX, startY;
@@ -105,7 +105,7 @@
                         scale = 1;
                         zoomRange.value = 1;
                         imgX = 400;
-                        imgY = 310;
+                        imgY = 250;
                         drawImage();
                     }
                     img.src = event.target.result;
@@ -144,7 +144,7 @@
         });
         window.addEventListener('touchmove', (e) => {
             if (!isDragging || e.touches.length !== 1) return;
-            onDrag(e.touches[0].clientX, e.touches.clientY);
+            onDrag(e.touches[0].clientX, e.touches[0].clientY);
         });
         window.addEventListener('touchend', () => { isDragging = false; });
 
@@ -153,8 +153,9 @@
 
             if (userImage) {
                 ctx.save();
+                // ওপরের ছবির জন্য বক্স আকৃতির ক্লিপিং এরিয়া (রেকটেঙ্গেল উইথ কর্নার রেডিয়াস)
                 ctx.beginPath();
-                ctx.arc(400, 310, 270, 0, Math.PI * 2, true);
+                ctx.roundRect(40, 40, 720, 480, 20);
                 ctx.closePath();
                 ctx.clip();
 
@@ -164,79 +165,54 @@
                 ctx.restore();
             }
 
-            drawExactPosterFrame();
+            drawExactReferenceFrame();
         }
 
-        function drawExactPosterFrame() {
-            // ১. ব্যাকগ্রাউন্ড গাঢ় সবুজ (ইসলামিক থিম)
-            ctx.fillStyle = '#0b3d17';
-            ctx.fillRect(0, 0, 800, 800);
+        function drawExactReferenceFrame() {
+            // ১. নিচের লাল রঙের মূল ব্যানার ব্যাকগ্রাউন্ড
+            ctx.fillStyle = '#8b0000';
+            ctx.fillRect(0, 480, 800, 320);
 
-            // ২. ছবির জন্য সাদা সার্কেল ও সোনালী বর্ডার
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(400, 310, 275, 0, Math.PI * 2);
+            // ২. বাঁ পাশের সাদা প্যানেল (তারিখ ও সময়ের জন্য)
             ctx.fillStyle = '#ffffff';
-            ctx.fill();
-            ctx.lineWidth = 12;
-            ctx.strokeStyle = '#facc15';
-            ctx.stroke();
-            ctx.restore();
-
-            // ৩. নিচের কার্ভড ডিজাইন
-            ctx.fillStyle = '#062810';
             ctx.beginPath();
-            ctx.moveTo(0, 480);
-            ctx.bezierCurveTo(200, 440, 600, 440, 800, 480);
-            ctx.lineTo(800, 800);
-            ctx.lineTo(0, 800);
-            ctx.closePath();
+            ctx.roundRect(40, 520, 200, 240, 15);
             ctx.fill();
 
-            // ৪. কেন্দ্রীয় সম্মেলন টেক্সট
-            ctx.fillStyle = '#fde047';
+            // বাঁ পাশের টেক্সট (তারিখ ও সময়)
+            ctx.fillStyle = '#990000';
+            ctx.font = '700 48px "Hind Siliguri", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('২৫-২৭', 140, 585);
+
+            ctx.fillStyle = '#222222';
+            ctx.font = '600 24px "Hind Siliguri", sans-serif';
+            ctx.fillText('নভেম্বর ২০২৬', 140, 625);
+
+            ctx.font = '600 20px "Hind Siliguri", sans-serif';
+            ctx.fillStyle = '#555555';
+            ctx.fillText('শুরু বুধবার', 140, 665);
+            ctx.fillText('বেলা ২টা', 140, 695);
+
+            // ৩. মাঝখানের মূল শিরোনাম (ঐতিহাসিক চরমোনাই মাহফিল)
+            ctx.fillStyle = '#ffffff';
             ctx.font = '700 62px "Hind Siliguri", sans-serif';
             ctx.textAlign = 'center';
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-            ctx.shadowBlur = 10;
-            ctx.fillText('বাৎসরিক মাহফিল', 400, 565);
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+            ctx.shadowBlur = 12;
+            ctx.fillText('ঐতিহাসিক চরমোনাই', 510, 585);
+            ctx.fillText('মাহফিল', 510, 660);
+            ctx.shadowBlur = 0; // শ্যাডো রিসেট
 
-            // ৫. তারিখ (২৫, ২৬ ও ২৭)
-            ctx.font = '700 34px "Hind Siliguri", sans-serif';
-            ctx.fillStyle = '#ffffff';
-            ctx.fillText('২৫, ২৬ ও ২৭ নভেম্বর ২০২৬', 400, 605);
-            ctx.shadowBlur = 0;
-
-            // ৬. ইনফো প্যানেল
-            ctx.fillStyle = '#0f4c20';
-            ctx.beginPath();
-            ctx.roundRect(100, 630, 600, 75, 12);
-            ctx.fill();
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = '#facc15';
-            ctx.stroke();
-
-            // ৭. স্থান বিবরণ
-            ctx.fillStyle = '#ffffff';
-            ctx.font = '600 22px "Hind Siliguri", sans-serif';
-            ctx.fillText('স্থান: চরমোনাই দরবার শরীফ, বরিশাল', 400, 665);
-            
-            ctx.font = '600 18px "Hind Siliguri", sans-serif';
-            ctx.fillStyle = '#cbd5e1';
-            ctx.fillText('সকলের প্রতি আন্তরিক দাওয়াত রইল', 400, 695);
-
-            // ৮. সংগঠনের নাম ব্যানার (নিচে)
-            ctx.fillStyle = '#990000';
-            ctx.fillRect(0, 730, 800, 70);
-
-            ctx.fillStyle = '#ffffff';
-            ctx.font = '700 28px "Hind Siliguri", sans-serif';
-            ctx.fillText('বাংলাদেশ মুজাহিদ কমিটি ও চরমোনাই দরবার', 400, 775);
+            // ৪. একদম নিচের স্থান ও ফুটার টেক্সট
+            ctx.fillStyle = '#fde047';
+            ctx.font = '700 26px "Hind Siliguri", sans-serif';
+            ctx.fillText('স্থান: চরমোনাই দরবার শরীফ, বরিশাল', 510, 725);
         }
 
         downloadBtn.addEventListener('click', () => {
             const link = document.createElement('a');
-            link.download = 'Charmonai-Mahfil-2026-Frame.png';
+            link.download = 'Itihashik-Charmonai-Mahfil-Frame.png';
             link.href = canvas.toDataURL('image/png');
             link.click();
         });
