@@ -3,373 +3,653 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>অটো ফ্রেম মেকার - কেন্দ্রীয় সম্মেলন ২০২৭</title>
+    <title>1:1 Photo Frame Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
-
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Hind Siliguri', sans-serif;
+            font-family: 'Anek Bangla', sans-serif;
         }
-
         body {
-            background-color: #f0f2f5;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            background-color: #f4f1ea;
+            color: #3b1c0e;
             padding: 15px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        header h1 {
-            font-size: 1.5rem;
-            color: #0b2545;
-        }
-
-        .main-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            background: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            max-width: 450px;
-            width: 100%;
         }
-
-        /* Canvas Wrapper */
-        .canvas-container {
-            position: relative;
-            width: 320px;
-            height: 320px;
-            background: #fff;
-            overflow: hidden;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            margin-bottom: 20px;
-        }
-
-        canvas {
-            display: block;
+        .container {
             width: 100%;
-            height: 100%;
+            max-width: 480px;
         }
-
-        /* Controls */
-        .controls {
-            width: 100%;
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #4a1515;
             display: flex;
-            flex-direction: column;
-            gap: 12px;
+            justify-content: space-between;
+            align-items: center;
         }
-
-        .file-upload-btn {
-            background: #00b4d8;
-            color: white;
-            padding: 12px;
-            text-align: center;
-            border-radius: 8px;
+        .settings-toggle {
+            background: #e2d8c3;
+            border: 1px solid #c5b496;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.3s;
+            color: #4a1515;
         }
-
-        .file-upload-btn:hover {
-            background: #0096c7;
+        /* Settings Panel */
+        .settings-panel {
+            display: none;
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #d4c4a8;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-
-        #imageInput {
+        .settings-panel.active {
+            display: block;
+        }
+        .settings-panel h3 {
+            font-size: 15px;
+            margin-bottom: 10px;
+            color: #5c1616;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .setting-group {
+            margin-bottom: 10px;
+        }
+        .setting-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        .setting-group input[type="text"], .setting-group input[type="file"] {
+            width: 100%;
+            padding: 7px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        /* Main Controls */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .file-btn {
+            background: #fff;
+            border: 1.5px solid #d4c4a8;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            color: #3b1c0e;
+            display: block;
+        }
+        .file-btn input {
             display: none;
         }
-
-        .slider-group {
+        .input-box {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid #e6c875;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #fff;
+            outline: none;
+        }
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .btn {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #fff;
+            background-color: #5c1616;
+            flex: 1;
+            text-align: center;
+            min-width: 100px;
+        }
+        /* Zoom & Pan Controls */
+        .adjust-controls {
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid #d4c4a8;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .slider-row {
             display: flex;
             align-items: center;
             gap: 10px;
-            background: #f8f9fa;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-        }
-
-        .slider-group label {
-            min-width: 60px;
+            font-size: 13px;
             font-weight: 600;
-            color: #555;
         }
-
-        .slider-group input[type="range"] {
+        .slider-row input[type="range"] {
             flex: 1;
-            accent-color: #00b4d8;
+            accent-color: #5c1616;
         }
-
-        .download-btn {
-            background: #2ec4b6;
-            color: white;
-            border: none;
-            padding: 14px;
+        /* Canvas Preview */
+        .canvas-wrapper {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: #ddd;
             border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.3s;
-            text-align: center;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin-bottom: 12px;
+            touch-action: none;
         }
-
-        .download-btn:hover {
-            background: #25a194;
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            cursor: grab;
+        }
+        .instructions {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #4a3b32;
+            background: #eae4d7;
+            padding: 10px;
+            border-radius: 8px;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>কেন্দ্রীয় সম্মেলন ২০২৭ - অটো ফ্রেম মেকার</h1>
-    </header>
+<div class="container">
+    <div class="header-title">
+        <span id="pageTitleDisplay">1:1 Photo Frame</span>
+        <button class="settings-toggle" onclick="toggleSettings()">⚙️ ফ্রেম এডিট</button>
+    </div>
 
-    <div class="main-container">
-        <!-- Frame Preview Box -->
-        <div class="canvas-container" id="canvasContainer">
-            <canvas id="frameCanvas" width="1080" height="1080"></canvas>
+    <!-- Customizer Panel -->
+    <div class="settings-panel" id="settingsPanel">
+        <h3>ফ্রেমের লেখা ও লোগো পরিবর্তন করুন</h3>
+        <div class="setting-group">
+            <label>উপরের মূল শিরোনাম:</label>
+            <input type="text" id="cfgMainTitle" value="চরমানাই মাহফিলে আসার পরে" oninput="saveAndRender()">
         </div>
-
-        <!-- Controls -->
-        <div class="controls">
-            <label for="imageInput" class="file-upload-btn">
-                📷 আপনার ছবি নির্বাচন করুন
-            </label>
-            <input type="file" id="imageInput" accept="image/*">
-
-            <div class="slider-group">
-                <label>জুম:</label>
-                <input type="range" id="zoomRange" min="0.5" max="3" step="0.01" value="1">
-            </div>
-
-            <div class="slider-group">
-                <label>ঘূর্ণন:</label>
-                <input type="range" id="rotateRange" min="-180" max="180" step="1" value="0">
-            </div>
-
-            <button class="download-btn" id="downloadBtn">⬇ হাই-রেজোলিউশন ছবি ডাউনলোড করুন</button>
+        <div class="setting-group">
+            <label>উপ-শিরোনাম (হলুদ বক্স):</label>
+            <input type="text" id="cfgSubTitle" value="যাদের পরিবর্তন হয়েছে" oninput="saveAndRender()">
+        </div>
+        <div class="setting-group">
+            <label>বাম ছবির নিচের লেখা:</label>
+            <input type="text" id="cfgLeftLabel" value="মাহফিলে আসার আগে" oninput="saveAndRender()">
+        </div>
+        <div class="setting-group">
+            <label>ডান ছবির নিচের লেখা:</label>
+            <input type="text" id="cfgRightLabel" value="মাহফিলে আসার পরে" oninput="saveAndRender()">
+        </div>
+        <div class="setting-group">
+            <label>নিচের তারিখ/ইভেন্ট বার্তা:</label>
+            <input type="text" id="cfgDateText" value="চরমানাই মাহফিল: ২৫, ২৬ ও ২৭ নভেম্বর ২০২৬" oninput="saveAndRender()">
+        </div>
+        <div class="setting-group">
+            <label>পেজ বা মিডিয়ার নাম (নিচে বামে):</label>
+            <input type="text" id="cfgBrandName" value="ENK MEDIA" oninput="saveAndRender()">
+        </div>
+        <div class="setting-group">
+            <label>নিচে ডানের স্লোগান:</label>
+            <input type="text" id="cfgSlogan" value="সত্য সংবাদ সবার আগে | পেইজটি ফলো দিয়ে সাথে থাকুন" oninput="saveAndRender()">
+        </div>
+        <div class="setting-group">
+            <label>লোগো আপলোড করুন:</label>
+            <input type="file" accept="image/*" onchange="uploadAsset(event, 'logo')">
+        </div>
+        <div class="setting-group">
+            <label>ব্যাকগ্রাউন্ড ছবি পরিবর্তন করুন:</label>
+            <input type="file" accept="image/*" onchange="uploadAsset(event, 'bg')">
         </div>
     </div>
 
-    <script>
-        const canvas = document.getElementById('frameCanvas');
-        const ctx = canvas.getContext('2d');
+    <!-- User Inputs -->
+    <div class="controls-grid">
+        <label class="file-btn">
+            আগের ছবি দিন
+            <input type="file" accept="image/*" onchange="loadUserPhoto(event, 'left')">
+        </label>
+        <label class="file-btn">
+            পরের ছবি দিন
+            <input type="file" accept="image/*" onchange="loadUserPhoto(event, 'right')">
+        </label>
+        <input type="text" class="input-box" id="userName" placeholder="নাম লিখুন" oninput="renderCanvas()">
+        <input type="text" class="input-box" id="userDistrict" placeholder="জেলা লিখুন" oninput="renderCanvas()">
+    </div>
 
-        let userImage = null;
-        let imgX = canvas.width / 2;
-        let imgY = canvas.height / 2 - 80;
-        let imgScale = 1;
-        let imgRotate = 0;
+    <div class="action-buttons">
+        <button class="btn" onclick="downloadPNG()">PNG ডাউনলোড</button>
+        <button class="btn" onclick="openImageNewTab()">ছবিটি খুলুন</button>
+        <button class="btn" onclick="resetPhotos()">রিসেট</button>
+    </div>
 
-        let isDragging = false;
-        let startX, startY;
+    <!-- Zoom Sliders -->
+    <div class="adjust-controls">
+        <div class="slider-row">
+            <span>বাম ছবি জুম:</span>
+            <input type="range" id="leftZoom" min="0.5" max="3" step="0.05" value="1" oninput="updateZoom('left', this.value)">
+        </div>
+        <div class="slider-row">
+            <span>ডান ছবি জুম:</span>
+            <input type="range" id="rightZoom" min="0.5" max="3" step="0.05" value="1" oninput="updateZoom('right', this.value)">
+        </div>
+    </div>
 
-        // Circle Profile Area parameters
-        const circleCenter = { x: 540, y: 410 };
-        const circleRadius = 350;
+    <!-- Canvas Preview -->
+    <div class="canvas-wrapper">
+        <canvas id="frameCanvas" width="1080" height="1080"></canvas>
+    </div>
 
-        // Load default placeholder or redraw blank frame
-        function drawFrame() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+    <div class="instructions">
+        নাম ও জেলা উপরের ঘরে লিখুন — ছবিতে বসবে। ছবি আপলোড করলে ফ্রেমে বসবে — ছবি টেনে সরিয়ে আর উপরের স্লাইডারে জুম করে মেলান। স্কয়ার ডিজাইন: 1:1। PNG ডাউনলোড বোতামে 1080×1080 ছবি নামবে।
+    </div>
+</div>
 
-            // 1. Background Gradient (Blue theme)
-            let bgGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            bgGrad.addColorStop(0, '#023e8a');
-            bgGrad.addColorStop(0.5, '#0077b6');
-            bgGrad.addColorStop(1, '#03045e');
-            ctx.fillStyle = bgGrad;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+<script>
+    const canvas = document.getElementById('frameCanvas');
+    const ctx = canvas.getContext('2d');
 
-            // Decorative background patterns/shapes
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
-            ctx.beginPath();
-            ctx.arc(900, 100, 300, 0, Math.PI * 2);
-            ctx.fill();
+    let photos = {
+        left: { img: null, x: 0, y: 0, scale: 1 },
+        right: { img: null, x: 0, y: 0, scale: 1 }
+    };
 
-            // 2. Draw User Image inside circle clipping mask
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(circleCenter.x, circleCenter.y, circleRadius, 0, Math.PI * 2);
-            ctx.closePath();
-            ctx.clip();
+    let assets = { logo: null, bg: null };
 
-            if (userImage) {
-                ctx.save();
-                ctx.translate(imgX, imgY);
-                ctx.rotate((imgRotate * Math.PI) / 180);
-                ctx.scale(imgScale, imgScale);
-                ctx.drawImage(userImage, -userImage.width / 2, -userImage.height / 2);
-                ctx.restore();
+    // ছবি রাখার বড় জায়গা নির্ধারণ (যাতে কোনো লেখা বা জায়গা নষ্ট না হয়)
+    const leftBox = { x: 60, y: 310, w: 465, h: 485, r: 25 };
+    const rightBox = { x: 555, y: 310, w: 465, h: 485, r: 25 };
+
+    let draggingSide = null;
+    let dragStartX = 0;
+    let dragStartY = 0;
+
+    window.onload = () => {
+        const savedCfg = JSON.parse(localStorage.getItem('frameConfig'));
+        if (savedCfg) {
+            document.getElementById('cfgMainTitle').value = savedCfg.mainTitle || '';
+            document.getElementById('cfgSubTitle').value = savedCfg.subTitle || '';
+            document.getElementById('cfgLeftLabel').value = savedCfg.leftLabel || '';
+            document.getElementById('cfgRightLabel').value = savedCfg.rightLabel || '';
+            document.getElementById('cfgDateText').value = savedCfg.dateText || '';
+            document.getElementById('cfgBrandName').value = savedCfg.brandName || '';
+            document.getElementById('cfgSlogan').value = savedCfg.slogan || '';
+        }
+        renderCanvas();
+    };
+
+    function toggleSettings() {
+        document.getElementById('settingsPanel').classList.toggle('active');
+    }
+
+    function saveAndRender() {
+        const cfg = {
+            mainTitle: document.getElementById('cfgMainTitle').value,
+            subTitle: document.getElementById('cfgSubTitle').value,
+            leftLabel: document.getElementById('cfgLeftLabel').value,
+            rightLabel: document.getElementById('cfgRightLabel').value,
+            dateText: document.getElementById('cfgDateText').value,
+            brandName: document.getElementById('cfgBrandName').value,
+            slogan: document.getElementById('cfgSlogan').value
+        };
+        localStorage.setItem('frameConfig', JSON.stringify(cfg));
+        renderCanvas();
+    }
+
+    function uploadAsset(e, type) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+                assets[type] = img;
+                renderCanvas();
+            };
+            img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function loadUserPhoto(e, side) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+                photos[side] = { img: img, x: 0, y: 0, scale: 1 };
+                document.getElementById(side + 'Zoom').value = 1;
+                renderCanvas();
+            };
+            img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function updateZoom(side, val) {
+        photos[side].scale = parseFloat(val);
+        renderCanvas();
+    }
+
+    function resetPhotos() {
+        photos.left = { img: null, x: 0, y: 0, scale: 1 };
+        photos.right = { img: null, x: 0, y: 0, scale: 1 };
+        document.getElementById('leftZoom').value = 1;
+        document.getElementById('rightZoom').value = 1;
+        document.getElementById('userName').value = '';
+        document.getElementById('userDistrict').value = '';
+        renderCanvas();
+    }
+
+    function roundRect(ctx, x, y, width, height, radius) {
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+    }
+
+    function drawPhotoInBox(photoObj, box, placeholderText) {
+        ctx.save();
+        roundRect(ctx, box.x, box.y, box.w, box.h, box.r);
+        ctx.clip();
+
+        ctx.fillStyle = '#e8e2d5';
+        ctx.fillRect(box.x, box.y, box.w, box.h);
+
+        if (photoObj.img) {
+            const img = photoObj.img;
+            const boxAspect = box.w / box.h;
+            const imgAspect = img.width / img.height;
+            let drawW, drawH;
+
+            if (imgAspect > boxAspect) {
+                drawH = box.h;
+                drawW = box.h * imgAspect;
             } else {
-                // Default placeholder avatar inside circle
-                ctx.fillStyle = '#e0fbfc';
-                ctx.fillRect(circleCenter.x - circleRadius, circleCenter.y - circleRadius, circleRadius * 2, circleRadius * 2);
-                ctx.fillStyle = '#90e0ef';
-                ctx.beginPath();
-                ctx.arc(circleCenter.x, circleCenter.y - 60, 100, 0, Math.PI * 2);
-                ctx.arc(circleCenter.x, circleCenter.y + 220, 180, 0, Math.PI, true);
-                ctx.fill();
+                drawW = box.w;
+                drawH = box.w / imgAspect;
             }
-            ctx.restore();
 
-            // 3. Circle Border (Golden/White ring)
-            ctx.beginPath();
-            ctx.arc(circleCenter.x, circleCenter.y, circleRadius, 0, Math.PI * 2);
-            ctx.lineWidth = 12;
-            ctx.strokeStyle = '#ffb703';
+            drawW *= photoObj.scale;
+            drawH *= photoObj.scale;
+
+            const centerX = box.x + box.w / 2 + photoObj.x;
+            const centerY = box.y + box.h / 2 + photoObj.y;
+
+            ctx.drawImage(img, centerX - drawW / 2, centerY - drawH / 2, drawW, drawH);
+        } else {
+            ctx.fillStyle = '#6b5a4e';
+            ctx.font = '600 26px "Anek Bangla", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(placeholderText, box.x + box.w / 2, box.y + box.h / 2);
+        }
+        ctx.restore();
+
+        ctx.save();
+        roundRect(ctx, box.x, box.y, box.w, box.h, box.r);
+        ctx.lineWidth = 8;
+        ctx.strokeStyle = '#e8c058';
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    function renderCanvas() {
+        const mainTitle = document.getElementById('cfgMainTitle').value;
+        const subTitle = document.getElementById('cfgSubTitle').value;
+        const leftLabel = document.getElementById('cfgLeftLabel').value;
+        const rightLabel = document.getElementById('cfgRightLabel').value;
+        const dateText = document.getElementById('cfgDateText').value;
+        const brandName = document.getElementById('cfgBrandName').value;
+        const slogan = document.getElementById('cfgSlogan').value;
+
+        const userName = document.getElementById('userName').value.trim();
+        const userDistrict = document.getElementById('userDistrict').value.trim();
+
+        ctx.clearRect(0, 0, 1080, 1080);
+
+        // 1. Background
+        if (assets.bg) {
+            ctx.drawImage(assets.bg, 0, 0, 1080, 1080);
+            ctx.fillStyle = 'rgba(45, 12, 12, 0.55)';
+            ctx.fillRect(0, 0, 1080, 1080);
+        } else {
+            const grad = ctx.createLinearGradient(0, 0, 0, 1080);
+            grad.addColorStop(0, '#5a1414');
+            grad.addColorStop(0.5, '#7a2020');
+            grad.addColorStop(1, '#3d0c0c');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 1080, 1080);
+        }
+
+        // 2. Top Main Banner
+        ctx.save();
+        roundRect(ctx, 80, 45, 920, 105, 50);
+        ctx.fillStyle = '#4a1010';
+        ctx.fill();
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = '#f2c94c';
+        ctx.stroke();
+
+        ctx.fillStyle = '#f2c94c';
+        ctx.font = '700 50px "Anek Bangla", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(mainTitle, 540, 100);
+        ctx.restore();
+
+        // 3. Sub-title Pill
+        ctx.save();
+        roundRect(ctx, 240, 175, 600, 70, 35);
+        ctx.fillStyle = '#fdf3d0';
+        ctx.fill();
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#e0b038';
+        ctx.stroke();
+
+        ctx.fillStyle = '#3b150e';
+        ctx.font = '700 38px "Anek Bangla", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(subTitle, 540, 212);
+        ctx.restore();
+
+        // 4. Photo Boxes (बড় জায়গা)
+        drawPhotoInBox(photos.left, leftBox, 'আগের ছবি দিন');
+        drawPhotoInBox(photos.right, rightBox, 'পরের ছবি দিন');
+
+        // 5. Labels under Photo Boxes
+        ctx.save();
+        roundRect(ctx, leftBox.x, leftBox.y + leftBox.h - 55, leftBox.w, 55, 18);
+        ctx.fillStyle = 'rgba(74, 16, 16, 0.9)';
+        ctx.fill();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#e8c058';
+        ctx.stroke();
+        ctx.fillStyle = '#fff';
+        ctx.font = '700 28px "Anek Bangla", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(leftLabel, leftBox.x + leftBox.w / 2, leftBox.y + leftBox.h - 22);
+
+        roundRect(ctx, rightBox.x, rightBox.y + rightBox.h - 55, rightBox.w, 55, 18);
+        ctx.fillStyle = 'rgba(74, 16, 16, 0.9)';
+        ctx.fill();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#e8c058';
+        ctx.stroke();
+        ctx.fillStyle = '#fff';
+        ctx.fillText(rightLabel, rightBox.x + rightBox.w / 2, rightBox.y + rightBox.h - 22);
+        ctx.restore();
+
+        // 6. User Name & District Display
+        if (userName || userDistrict) {
+            ctx.save();
+            roundRect(ctx, 150, 815, 780, 60, 30);
+            ctx.fillStyle = '#fff9e6';
+            ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#f2c94c';
             ctx.stroke();
 
-            // 4. Bottom Banner Background (Curved / Wave Shape)
-            ctx.beginPath();
-            ctx.moveTo(0, 750);
-            ctx.bezierCurveTo(300, 710, 780, 710, 1080, 750);
-            ctx.lineTo(1080, 1080);
-            ctx.lineTo(0, 1080);
-            ctx.closePath();
-            
-            let bannerGrad = ctx.createLinearGradient(0, 750, 0, 1080);
-            bannerGrad.addColorStop(0, '#003049');
-            bannerGrad.addColorStop(1, '#011627');
-            ctx.fillStyle = bannerGrad;
-            ctx.fill();
+            let displayInfo = userName;
+            if (userName && userDistrict) displayInfo += ` — জেলা: ${userDistrict}`;
+            else if (userDistrict) displayInfo = `জেলা: ${userDistrict}`;
 
-            // Red stripe accent
-            ctx.beginPath();
-            ctx.moveTo(0, 770);
-            ctx.bezierCurveTo(300, 730, 780, 730, 1080, 770);
-            ctx.lineTo(1080, 790);
-            ctx.bezierCurveTo(780, 750, 300, 750, 0, 790);
-            ctx.closePath();
-            ctx.fillStyle = '#d90429';
-            ctx.fill();
-
-            // 5. Texts & Typography
-            // Main Title: কেন্দ্রীয় সম্মেলন ২০২৭
+            ctx.fillStyle = '#4a1010';
+            ctx.font = '700 30px "Anek Bangla", sans-serif';
             ctx.textAlign = 'center';
-            ctx.font = '700 68px "Hind Siliguri", sans-serif';
-            ctx.fillStyle = '#ffb703';
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-            ctx.shadowBlur = 10;
-            ctx.fillText('কেন্দ্রীয় সম্মেলন ২০২৭', canvas.width / 2, 850);
-            ctx.shadowBlur = 0; // reset shadow
-
-            // Date & Venue Details
-            ctx.font = '600 32px "Hind Siliguri", sans-serif';
-            ctx.fillStyle = '#ffffff';
-            ctx.fillText('১১ ডিসেম্বর ’২৬, শুক্রবার, সকাল ৯টা', canvas.width / 2, 910);
-            ctx.fillText('জাতীয় ক্রীড়া পরিষদ চত্বর, পল্টন, ঢাকা', canvas.width / 2, 955);
-
-            // Organization Name (with custom matched style font look)
-            ctx.font = '700 48px "Hind Siliguri", sans-serif';
-            ctx.fillStyle = '#48cae4';
-            ctx.fillText('ইসলামী ছাত্র আন্দোলন বাংলাদেশ', canvas.width / 2, 1025);
-
-            // 6. Watermark at corner (icab Mirpur)
-            ctx.font = '400 18px "Hind Siliguri", sans-serif';
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-            ctx.textAlign = 'right';
-            ctx.fillText('icab Mirpur', 1060, 40);
+            ctx.textBaseline = 'middle';
+            ctx.fillText(displayInfo, 540, 847);
+            ctx.restore();
         }
 
-        // Handle Image Upload
-        document.getElementById('imageInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const img = new Image();
-                    img.onload = function() {
-                        userImage = img;
-                        imgScale = Math.max(circleRadius * 2 / img.width, circleRadius * 2 / img.height);
-                        document.getElementById('zoomRange').value = imgScale;
-                        imgX = circleCenter.x;
-                        imgY = circleCenter.y;
-                        imgRotate = 0;
-                        document.getElementById('rotateRange').value = 0;
-                        drawFrame();
-                    }
-                    img.src = event.target.result;
-                }
-                reader.readAsDataURL(file);
-            }
-        });
+        // 7. Date / Event Banner
+        const dateY = (userName || userDistrict) ? 890 : 835;
+        ctx.save();
+        roundRect(ctx, 180, dateY, 720, 52, 26);
+        ctx.fillStyle = '#4a1010';
+        ctx.fill();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#e8c058';
+        ctx.stroke();
 
-        // Controls Event Listeners
-        document.getElementById('zoomRange').addEventListener('input', function(e) {
-            imgScale = parseFloat(e.target.value);
-            drawFrame();
-        });
+        ctx.fillStyle = '#f2c94c';
+        ctx.font = '600 26px "Anek Bangla", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(dateText, 540, dateY + 28);
+        ctx.restore();
 
-        document.getElementById('rotateRange').addEventListener('input', function(e) {
-            imgRotate = parseInt(e.target.value);
-            drawFrame();
-        });
+        // 8. Footer Branding Bar
+        ctx.save();
+        ctx.fillStyle = '#2b0808';
+        ctx.fillRect(0, 985, 1080, 95);
+        ctx.fillStyle = '#e8c058';
+        ctx.fillRect(0, 985, 1080, 4);
 
-        // Touch & Mouse Drag Interactivity for moving image inside circle
-        const container = document.getElementById('canvasContainer');
+        roundRect(ctx, 45, 1002, 410, 60, 30);
+        ctx.fillStyle = '#fff';
+        ctx.fill();
 
-        function getPos(e) {
-            const rect = container.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            return {
-                x: (clientX - rect.left) * (canvas.width / rect.width),
-                y: (clientY - rect.top) * (canvas.height / rect.height)
-            };
+        if (assets.logo) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(80, 1032, 22, 0, Math.PI * 2);
+            ctx.clip();
+            ctx.drawImage(assets.logo, 58, 1010, 44, 44);
+            ctx.restore();
         }
 
-        container.addEventListener('mousedown', startDrag);
-        container.addEventListener('touchstart', startDrag);
+        ctx.fillStyle = '#3b150e';
+        ctx.font = '700 24px "Anek Bangla", sans-serif';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(brandName, assets.logo ? 112 : 70, 1034);
 
-        function startDrag(e) {
-            isDragging = true;
-            const pos = getPos(e);
-            startX = pos.x - imgX;
-            startY = pos.y - imgY;
-            e.preventDefault();
+        ctx.fillStyle = '#f5e6c8';
+        ctx.font = '600 22px "Anek Bangla", sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText(slogan, 1035, 1034);
+        ctx.restore();
+    }
+
+    function getCanvasCoords(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+            x: (clientX - rect.left) * (1080 / rect.width),
+            y: (clientY - rect.top) * (1080 / rect.height)
+        };
+    }
+
+    function isInside(pos, box) {
+        return pos.x >= box.x && pos.x <= box.x + box.w && pos.y >= box.y && pos.y <= box.y + box.h;
+    }
+
+    function startDrag(e) {
+        const pos = getCanvasCoords(e);
+        if (isInside(pos, leftBox) && photos.left.img) {
+            draggingSide = 'left';
+        } else if (isInside(pos, rightBox) && photos.right.img) {
+            draggingSide = 'right';
         }
-
-        window.addEventListener('mousemove', onDrag);
-        window.addEventListener('touchmove', onDrag);
-
-        function onDrag(e) {
-            if (!isDragging) return;
-            const pos = getPos(e);
-            imgX = pos.x - startX;
-            imgY = pos.y - startY;
-            drawFrame();
+        if (draggingSide) {
+            dragStartX = pos.x - photos[draggingSide].x;
+            dragStartY = pos.y - photos[draggingSide].y;
         }
+    }
 
-        window.addEventListener('mouseup', endDrag);
-        window.addEventListener('touchend', endDrag);
+    function onDrag(e) {
+        if (!draggingSide) return;
+        e.preventDefault();
+        const pos = getCanvasCoords(e);
+        photos[draggingSide].x = pos.x - dragStartX;
+        photos[draggingSide].y = pos.y - dragStartY;
+        renderCanvas();
+    }
 
-        function endDrag() {
-            isDragging = false;
+    function endDrag() {
+        draggingSide = null;
+    }
+
+    canvas.addEventListener('mousedown', startDrag);
+    canvas.addEventListener('mousemove', onDrag);
+    window.addEventListener('mouseup', endDrag);
+
+    canvas.addEventListener('touchstart', startDrag, { passive: false });
+    canvas.addEventListener('touchmove', onDrag, { passive: false });
+    window.addEventListener('touchend', endDrag);
+
+    function downloadPNG() {
+        const link = document.createElement('a');
+        link.download = 'photo-frame-1080x1080.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    }
+
+    function openImageNewTab() {
+        const dataUrl = canvas.toDataURL('image/png');
+        const newTab = window.open();
+        if (newTab) {
+            newTab.document.body.innerHTML = `<img src="${dataUrl}" style="max-width:100%; height:auto;" />`;
+        } else {
+            alert("পপ-আপ ব্লক করা আছে। অনুগ্রহ করে 'PNG ডাউনলোড' বাটন ব্যবহার করুন।");
         }
+    }
+</script>
 
-        // Download High-Res Image
-        document.getElementById('downloadBtn').addEventListener('click', function() {
-            drawFrame();
-            const link = document.createElement('a');
-            link.download = 'Kendrio-Sommelon-2027-Frame.png';
-            link.href = canvas.toDataURL('image/png', 1.0);
-            link.click();
-        });
-
-        // Initial Draw
-        drawFrame();
-    </script>
 </body>
 </html>
