@@ -3,219 +3,340 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ঐতিহাসিক চরমোনাই মাহফিল - ফ্রেম জেনারেটর</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>কেন্দ্রীয় সম্মেলন ২০২৭ - অটো ফ্রেম মেকার</title>
+    <!-- Tailwind CSS for modern responsive styling -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=SolaimanLipi:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
         body {
-            background-color: #f0f2f5;
-            font-family: 'Hind Siliguri', sans-serif;
-        }
-        .canvas-container {
-            position: relative;
-            width: 320px;
-            height: 320px;
-            margin: 0 auto;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            background: #e2e8f0;
-            cursor: grab;
-        }
-        .canvas-container:active {
-            cursor: grabbing;
-        }
-        @media (min-width: 400px) {
-            .canvas-container {
-                width: 360px;
-                height: 360px;
-            }
+            font-family: 'SolaimanLipi', sans-serif;
+            background-color: #0f172a;
         }
     </style>
 </head>
-<body class="min-h-screen py-6 px-4 flex flex-col items-center justify-center">
+<body class="min-h-screen text-gray-100 flex flex-col items-center justify-between p-4">
 
-    <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-5 text-center">
-        <h1 class="text-lg font-bold text-red-900 mb-1">ঐতিহাসিক চরমোনাই মাহফিল</h1>
-        <p class="text-xs text-gray-500 mb-3">২৫, ২৬ ও ২৭ নভেম্বর - ফ্রেম মেকার</p>
+    <!-- Header Section -->
+    <header class="w-full max-w-md text-center py-4">
+        <h1 class="text-2xl font-bold text-amber-400">কেন্দ্রীয় সম্মেলন ফ্রেম মেকার</h1>
+        <p class="text-xs text-gray-400 mt-1">আপনার ছবি আপলোড করুন এবং ফ্রেমযুক্ত ছবি ডাউনলোড করুন</p>
+    </header>
 
-        <!-- Preview Area -->
-        <div class="canvas-container mb-3" id="canvasBox">
-            <canvas id="frameCanvas" width="800" height="800" class="w-full h-full object-cover"></canvas>
+    <!-- Main Card Container -->
+    <main class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-2xl flex flex-col items-center gap-5">
+        
+        <!-- Frame Preview Canvas Area -->
+        <div class="relative w-full aspect-square max-w-[360px] bg-slate-950 rounded-xl overflow-hidden shadow-inner border border-slate-700">
+            <canvas id="twibbonCanvas" width="1000" height="1000" class="w-full h-full object-contain"></canvas>
+            
+            <!-- Loading Indicator -->
+            <div id="loader" class="absolute inset-0 bg-black/70 flex flex-col items-center justify-center text-white text-sm hidden">
+                <svg class="animate-spin h-8 w-8 text-amber-500 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                ফ্রেম লোড হচ্ছে...
+            </div>
         </div>
-        <p class="text-[11px] text-gray-400 mb-4">💡 ছবিতে আঙুল দিয়ে ডানে-বায়ে বা উপরে-নিচে সরিয়ে পজিশন ঠিক করুন</p>
 
-        <!-- Controls -->
-        <div class="space-y-3 mb-4 text-left bg-gray-50 p-3 rounded-xl border border-gray-100">
+        <!-- Controls / Inputs -->
+        <div class="w-full flex flex-col gap-4">
+            <!-- Image Upload Button -->
             <div>
-                <label class="block text-xs font-semibold text-gray-700 mb-1">আপনার ছবি সিলেক্ট করুন:</label>
-                <input type="file" id="imageUpload" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 cursor-pointer">
+                <label class="block text-sm font-medium text-gray-300 mb-1.5">আপনার ছবি নির্বাচন করুন:</label>
+                <input type="file" id="imageInput" accept="image/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-amber-500 file:text-slate-955 hover:file:bg-amber-400 file:cursor-pointer cursor-pointer bg-slate-950 border border-slate-700 rounded-lg">
             </div>
 
-            <div>
-                <div class="flex justify-between text-xs font-semibold text-gray-700 mb-1">
-                    <span>জুম করুন (ছোট/বড়):</span>
+            <!-- Image Position Adjustments -->
+            <div class="grid grid-cols-2 gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs">
+                <div>
+                    <label class="block text-gray-400 mb-1">জুম করুন (<span id="zoomVal">100</span>%)</label>
+                    <input type="range" id="zoomRange" min="50" max="250" value="100" class="w-full accent-amber-500 cursor-pointer">
                 </div>
-                <input type="range" id="zoomRange" min="0.4" max="3" step="0.02" value="1" class="w-full accent-red-700">
+                <div>
+                    <label class="block text-gray-400 mb-1">ঘূর্ণন (<span id="rotateVal">0</span>°)</label>
+                    <input type="range" id="rotateRange" min="-180" max="180" value="0" class="w-full accent-amber-500 cursor-pointer">
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-3 pt-2">
+                <button id="downloadBtn" class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold py-3 px-4 rounded-xl shadow-lg transition duration-200 text-center cursor-pointer disabled:opacity-50" disabled>
+                    ডাউনলোড করুন 📥
+                </button>
             </div>
         </div>
+    </main>
 
-        <!-- Download Button -->
-        <button id="downloadBtn" class="w-full bg-[#990000] hover:bg-[#7a0000] text-white font-semibold py-3 px-4 rounded-xl shadow-lg transition duration-200 text-sm flex items-center justify-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
-            ফ্রেমসহ ছবি ডাউনলোড করুন
-        </button>
-    </div>
+    <!-- Footer -->
+    <footer class="w-full max-w-md text-center py-4 text-xs text-gray-500">
+        ইসলামী ছাত্র আন্দোলন বাংলাদেশ • মোবাইল ফ্রেন্ডলি
+    </footer>
 
-    <!-- Script -->
+    <!-- JavaScript for Canvas Rendering & Frame Composition -->
     <script>
-        const canvas = document.getElementById('frameCanvas');
+        const canvas = document.getElementById('twibbonCanvas');
         const ctx = canvas.getContext('2d');
-        const imageUpload = document.getElementById('imageUpload');
+        const imageInput = document.getElementById('imageInput');
         const zoomRange = document.getElementById('zoomRange');
+        const rotateRange = document.getElementById('rotateRange');
         const downloadBtn = document.getElementById('downloadBtn');
-        const canvasBox = document.getElementById('canvasBox');
+        const loader = document.getElementById('loader');
 
         let userImage = null;
-        let imgX = 400;
-        let imgY = 250;
-        let scale = 1;
-        let isDragging = false;
-        let startX, startY;
+        
+        // Frame design dimensions (1000x1000px base)
+        const CANVAS_SIZE = 1000;
+        
+        // Circular Photo Mask coordinates & radius
+        const maskX = 500;
+        const maskY = 320;
+        const maskRadius = 260;
 
-        // ডিফল্ট ডেমো ছবি লোড
-        let loadedUserImg = new Image();
-        loadedUserImg.crossOrigin = "anonymous";
-        loadedUserImg.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800';
-        loadedUserImg.onload = () => {
-            userImage = loadedUserImg;
-            drawImage();
+        // Image transform states
+        let imgState = {
+            scale: 1,
+            rotation: 0,
+            offsetX: 0,
+            offsetY: 0
         };
 
-        imageUpload.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const img = new Image();
-                    img.onload = function() {
-                        userImage = img;
-                        scale = 1;
-                        zoomRange.value = 1;
-                        imgX = 400;
-                        imgY = 250;
-                        drawImage();
-                    }
-                    img.src = event.target.result;
-                }
-                reader.readAsDataURL(file);
-            }
-        });
-
-        zoomRange.addEventListener('input', (e) => {
-            scale = parseFloat(e.target.value);
-            drawImage();
-        });
-
-        // মাউস ও টাচ ড্র্যাগ ইভেন্ট
-        function startDrag(clientX, clientY) {
-            isDragging = true;
-            startX = clientX - imgX;
-            startY = clientY - imgY;
+        function loadFrame() {
+            loader.classList.remove('hidden');
+            drawComposite();
+            loader.classList.add('hidden');
         }
 
-        function onDrag(clientX, clientY) {
-            if (!isDragging) return;
-            imgX = clientX - startX;
-            imgY = clientY - startY;
-            drawImage();
-        }
+        function drawComposite() {
+            ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-        canvasBox.addEventListener('mousedown', (e) => startDrag(e.clientX, e.clientY));
-        window.addEventListener('mousemove', (e) => onDrag(e.clientX, e.clientY));
-        window.addEventListener('mouseup', () => { isDragging = false; });
+            // 1. Background Gradient / Base Blue Sky simulation from poster
+            const bgGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_SIZE);
+            bgGrad.addColorStop(0, '#1e3a8a'); 
+            bgGrad.addColorStop(0.45, '#3b82f6');
+            bgGrad.addColorStop(0.5, '#047857'); 
+            bgGrad.addColorStop(1, '#064e3b');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-        canvasBox.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 1) {
-                startDrag(e.touches[0].clientX, e.touches[0].clientY);
-            }
-        });
-        window.addEventListener('touchmove', (e) => {
-            if (!isDragging || e.touches.length !== 1) return;
-            onDrag(e.touches[0].clientX, e.touches[0].clientY);
-        });
-        window.addEventListener('touchend', () => { isDragging = false; });
+            // Draw clean background block matching the lower section of the poster
+            ctx.fillStyle = '#062c1e';
+            ctx.fillRect(0, 480, CANVAS_SIZE, 520);
 
-        function drawImage() {
-            ctx.clearRect(0, 0, 800, 800);
-
+            // 2. Draw User Image inside the Circular Clipping Mask if uploaded
             if (userImage) {
                 ctx.save();
-                // ওপরের ছবির জন্য বক্স আকৃতির ক্লিপিং এরিয়া (রেকটেঙ্গেল উইথ কর্নার রেডিয়াস)
                 ctx.beginPath();
-                ctx.roundRect(40, 40, 720, 480, 20);
+                ctx.arc(maskX, maskY, maskRadius, 0, Math.PI * 2, true);
                 ctx.closePath();
                 ctx.clip();
 
-                ctx.translate(imgX, imgY);
-                ctx.scale(scale, scale);
-                ctx.drawImage(userImage, -userImage.width / 2, -userImage.height / 2);
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+                ctx.save();
+                ctx.translate(maskX + imgState.offsetX, maskY + imgState.offsetY);
+                ctx.rotate((imgState.rotation * Math.PI) / 180);
+                ctx.scale(imgState.scale, imgState.scale);
+
+                const drawWidth = userImage.width;
+                const drawHeight = userImage.height;
+                ctx.drawImage(userImage, -drawWidth / 2, -drawHeight / 2, drawWidth, drawHeight);
+
                 ctx.restore();
+                ctx.restore();
+            } else {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(maskX, maskY, maskRadius, 0, Math.PI * 2, true);
+                ctx.closePath();
+                ctx.fillStyle = "#cbd5e1";
+                ctx.fill();
+                ctx.restore();
+
+                ctx.fillStyle = "#334155";
+                ctx.font = "bold 30px 'SolaimanLipi', sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("আপনার ছবি এখানে দিন", maskX, maskY);
             }
 
-            drawExactReferenceFrame();
+            // 3. Draw Frame Overlay Elements (Texts, Banners, and Footer matching poster exactly)
+            drawOverlayGraphics();
         }
 
-        function drawExactReferenceFrame() {
-            // ১. নিচের লাল রঙের মূল ব্যানার ব্যাকগ্রাউন্ড
-            ctx.fillStyle = '#8b0000';
-            ctx.fillRect(0, 480, 800, 320);
+        function drawOverlayGraphics() {
+            // Top Left Mini Badge: "মুক্তির মূলমন্ত্র / ইসলামী শাসনতন্ত্র"
+            ctx.fillStyle = "rgba(255, 255, 255, 0.15)";
+            ctx.fillRect(40, 40, 210, 50);
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 18px 'SolaimanLipi', sans-serif";
+            ctx.textAlign = "left";
+            ctx.fillText("মুক্তির মূলমন্ত্র", 55, 68);
+            ctx.font = "bold 16px 'SolaimanLipi', sans-serif";
+            ctx.fillText("ইসলামী শাসনতন্ত্র", 55, 87);
 
-            // ২. বাঁ পাশের সাদা প্যানেল (তারিখ ও সময়ের জন্য)
-            ctx.fillStyle = '#ffffff';
-            ctx.beginPath();
-            ctx.roundRect(40, 520, 200, 240, 15);
-            ctx.fill();
+            // Top Right Poem snippet from poster
+            ctx.fillStyle = "#fef08a";
+            ctx.font = "16px 'SolaimanLipi', sans-serif";
+            ctx.textAlign = "right";
+            ctx.fillText("ছিঁড়ে ফেলো আজ আয়েশী রাতের মখমল-অবসাদ", 960, 45);
+            ctx.fillText("নতুন পানিতে হাল খুলে দাও হে মাঝি সিন্দাবাদ !", 960, 70);
 
-            // বাঁ পাশের টেক্সট (তারিখ ও সময়)
-            ctx.fillStyle = '#990000';
-            ctx.font = '700 48px "Hind Siliguri", sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('২৫-২৭', 140, 585);
-
-            ctx.fillStyle = '#222222';
-            ctx.font = '600 24px "Hind Siliguri", sans-serif';
-            ctx.fillText('নভেম্বর ২০২৬', 140, 625);
-
-            ctx.font = '600 20px "Hind Siliguri", sans-serif';
-            ctx.fillStyle = '#555555';
-            ctx.fillText('শুরু বুধবার', 140, 665);
-            ctx.fillText('বেলা ২টা', 140, 695);
-
-            // ৩. মাঝখানের মূল শিরোনাম (ঐতিহাসিক চরমোনাই মাহফিল)
-            ctx.fillStyle = '#ffffff';
-            ctx.font = '700 62px "Hind Siliguri", sans-serif';
-            ctx.textAlign = 'center';
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+            // Main Heading: "কেন্দ্রীয় সম্মেলন ২০২৭"
+            ctx.fillStyle = "#fef08a"; 
+            ctx.font = "bold 75px 'SolaimanLipi', sans-serif";
+            ctx.textAlign = "center";
+            ctx.shadowColor = "rgba(0,0,0,0.6)";
             ctx.shadowBlur = 12;
-            ctx.fillText('ঐতিহাসিক চরমোনাই', 510, 585);
-            ctx.fillText('মাহফিল', 510, 660);
-            ctx.shadowBlur = 0; // শ্যাডো রিসেট
+            ctx.fillText("কেন্দ্রীয় সম্মেলন", 500, 390);
+            
+            // Year 2027
+            ctx.font = "bold 50px 'SolaimanLipi', sans-serif";
+            ctx.fillStyle = "#ffffff";
+            ctx.fillText("২০২৭", 500, 455);
+            ctx.shadowBlur = 0; 
 
-            // ৪. একদম নিচের স্থান ও ফুটার টেক্সট
-            ctx.fillStyle = '#fde047';
-            ctx.font = '700 26px "Hind Siliguri", sans-serif';
-            ctx.fillText('স্থান: চরমোনাই দরবার শরীফ, বরিশাল', 510, 725);
+            // Date & Venue Dark Banner Box
+            ctx.fillStyle = "#022c22"; 
+            ctx.strokeStyle = "#059669";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.roundRect(100, 480, 800, 95, 12);
+            ctx.fill();
+            ctx.stroke();
+
+            // Date text[span_0](start_span)[span_0](end_span)
+            ctx.fillStyle = "#fde047";
+            ctx.font = "bold 26px 'SolaimanLipi', sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("১১ ডিসেম্বর '২৬, শুক্রবার, সকাল ৯টা", 500, 520);[span_1](start_span)[span_1](end_span)
+
+            // Venue text[span_2](start_span)[span_2](end_span)
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 28px 'SolaimanLipi', sans-serif";
+            ctx.fillText("জাতীয় ক্রীড়া পরিষদ চত্বর, পল্টন, ঢাকা", 500, 560);[span_3](start_span)[span_3](end_span)
+
+            // Bottom Red/Dark Footer Banner with Organization Name
+            ctx.fillStyle = "#7f1d1d"; 
+            ctx.fillRect(0, 620, CANVAS_SIZE, 380);
+
+            // Bottom Logo Text: "ইসলামী ছাত্র আন্দোলন বাংলাদেশ"
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 55px 'SolaimanLipi', sans-serif";
+            ctx.textAlign = "center";
+            ctx.shadowColor = "rgba(0,0,0,0.5)";
+            ctx.shadowBlur = 8;
+            ctx.fillText("ইসলামী ছাত্র আন্দোলন বাংলাদেশ", 500, 720);
+            ctx.shadowBlur = 0;
+
+            // Address and email info at the bottom[span_4](start_span)[span_4](end_span)
+            ctx.font = "18px 'SolaimanLipi', sans-serif";
+            ctx.fillStyle = "#fca5a5";
+            ctx.fillText("৫৫/বি, পুরানা পল্টন, ঢাকা-১০০০, e-mail: icabd22@gmail.com", 500, 780);[span_5](start_span)[span_5](end_span)
+
+            // Social icons row[span_6](start_span)[span_6](end_span)
+            ctx.font = "16px sans-serif";
+            ctx.fillStyle = "#ffffff";
+            ctx.fillText("f icabd91   📷 icabd91   ✔ icabd91   🌐 chhatraandolan.org", 500, 830);[span_7](start_span)[span_7](end_span)
         }
 
-        downloadBtn.addEventListener('click', () => {
+        // Handle image upload
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    userImage = img;
+                    imgState.scale = 1;
+                    imgState.rotation = 0;
+                    imgState.offsetX = 0;
+                    imgState.offsetY = 0;
+                    zoomRange.value = 100;
+                    rotateRange.value = 0;
+                    document.getElementById('zoomVal').innerText = 100;
+                    document.getElementById('rotateVal').innerText = 0;
+
+                    downloadBtn.removeAttribute('disabled');
+                    drawComposite();
+                }
+                img.src = event.target.result;
+            }
+            reader.readAsDataURL(file);
+        });
+
+        // Zoom & Rotate controls
+        zoomRange.addEventListener('input', function(e) {
+            imgState.scale = parseFloat(e.target.value) / 100;
+            document.getElementById('zoomVal').innerText = e.target.value;
+            drawComposite();
+        });
+
+        rotateRange.addEventListener('input', function(e) {
+            imgState.rotation = parseInt(e.target.value);
+            document.getElementById('rotateVal').innerText = e.target.value;
+            drawComposite();
+        });
+
+        // Drag/Pan support
+        let dragging = false;
+        let lastX = 0, lastY = 0;
+
+        canvas.addEventListener('mousedown', (e) => {
+            dragging = true;
+            lastX = e.clientX;
+            lastY = e.clientY;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!dragging || !userImage) return;
+            const rect = canvas.getBoundingClientRect();
+            const scaleFactor = CANVAS_SIZE / rect.width;
+            
+            imgState.offsetX += (e.clientX - lastX) * scaleFactor;
+            imgState.offsetY += (e.clientY - lastY) * scaleFactor;
+            lastX = e.clientX;
+            lastY = e.clientY;
+            drawComposite();
+        });
+
+        window.addEventListener('mouseup', () => { dragging = false; });
+
+        canvas.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                dragging = true;
+                lastX = e.touches[0].clientX;
+                lastY = e.touches[0].clientY;
+            }
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!dragging || !userImage || e.touches.length !== 1) return;
+            const rect = canvas.getBoundingClientRect();
+            const scaleFactor = CANVAS_SIZE / rect.width;
+
+            imgState.offsetX += (e.touches[0].clientX - lastX) * scaleFactor;
+            imgState.offsetY += (e.touches[0].clientY - lastY) * scaleFactor;
+            lastX = e.touches[0].clientX;
+            lastY = e.touches[0].clientY;
+            drawComposite();
+        });
+
+        window.addEventListener('touchend', () => { dragging = false; });
+
+        // Download Final Image Button
+        downloadBtn.addEventListener('click', function() {
             const link = document.createElement('a');
-            link.download = 'Itihashik-Charmonai-Mahfil-Frame.png';
-            link.href = canvas.toDataURL('image/png');
+            link.download = 'Kendrio-Shommelon-2027-Frame.png';
+            link.href = canvas.toDataURL('image/png', 1.0);
             link.click();
         });
+
+        window.onload = function() {
+            loadFrame();
+        };
     </script>
 </body>
 </html>
