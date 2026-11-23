@@ -3,711 +3,800 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>চরমোনাই অগ্রহায়ণ মাহফিল - প্রোফাইল ফ্রেম জেনারেটর</title>
-    <!-- Google Fonts for Premium Bangla Typography -->
+    <title>ঐতিহাসিক চরমোনাই বাৎসরিক মাহফিল - প্রোফাইল ফ্রেম</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for Crisp Bangla Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Noto+Serif+Bengali:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        :root {
-            --primary: #0f2c7a;
-            --secondary: #f59e0b;
-            --bg-dark: #0b132b;
-            --card-bg: #1c2541;
-            --text-light: #f8fafc;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Hind Siliguri', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
         body {
-            background: linear-gradient(135deg, #090e24 0%, #16224a 100%);
-            color: var(--text-light);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 16px;
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #04120c;
+            color: #f3f4f6;
+            overscroll-behavior-y: contain;
         }
-
-        .container {
-            width: 100%;
-            max-width: 480px;
-            background: rgba(28, 37, 65, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 16px;
-        }
-
-        header h1 {
+        .font-serif-bn {
             font-family: 'Noto Serif Bengali', serif;
-            font-size: 1.4rem;
-            color: #fbbf24;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
         }
-
-        header p {
-            font-size: 0.85rem;
-            color: #cbd5e1;
-            margin-top: 4px;
+        /* Custom Range Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
         }
-
-        /* Canvas Wrapper */
-        .canvas-box {
-            position: relative;
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 22px;
+            width: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f5d76e, #d4af37);
+            border: 2px solid #061a11;
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
             width: 100%;
-            aspect-ratio: 1 / 1;
-            background: #1e293b;
-            border-radius: 14px;
-            overflow: hidden;
-            border: 2px solid rgba(251, 191, 36, 0.4);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            height: 6px;
+            cursor: pointer;
+            background: #134e32;
+            border-radius: 999px;
+            border: 1px solid #1f6b47;
+        }
+        /* Canvas Touch Interaction */
+        #frameCanvas {
             touch-action: none;
             cursor: grab;
         }
-
-        .canvas-box:active {
+        #frameCanvas:active {
             cursor: grabbing;
         }
-
-        canvas {
-            width: 100%;
-            height: 100%;
-            display: block;
+        .gold-gradient-btn {
+            background: linear-gradient(135deg, #e5c158 0%, #f7df8b 50%, #c89d28 100%);
+            color: #061a11;
         }
-
-        .hint-badge {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.65);
-            color: #fff;
-            font-size: 0.75rem;
-            padding: 4px 12px;
-            border-radius: 20px;
-            pointer-events: none;
-            white-space: nowrap;
-            backdrop-filter: blur(4px);
-        }
-
-        /* Controls */
-        .controls {
-            margin-top: 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .upload-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            padding: 13px;
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: white;
-            font-size: 1rem;
-            font-weight: 700;
-            border-radius: 12px;
-            cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
-            transition: transform 0.15s ease;
-        }
-
-        .upload-btn:active {
-            transform: scale(0.98);
-        }
-
-        input[type="file"] {
-            display: none;
-        }
-
-        .slider-group {
-            background: rgba(15, 23, 42, 0.6);
-            padding: 12px 14px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .slider-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            color: #e2e8f0;
-            margin-bottom: 6px;
-        }
-
-        input[type="range"] {
-            width: 100%;
-            accent-color: #fbbf24;
-            height: 6px;
-            background: #334155;
-            border-radius: 5px;
-            outline: none;
-        }
-
-        .action-row {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 10px;
-        }
-
-        .btn-reset {
-            padding: 13px;
-            background: #334155;
-            color: #f8fafc;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-        }
-
-        .btn-download {
-            padding: 13px;
-            background: linear-gradient(135deg, #16a34a, #15803d);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(22, 163, 74, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-download:active {
-            transform: scale(0.98);
-        }
-
-        footer {
-            margin-top: 16px;
-            text-align: center;
-            font-size: 0.78rem;
-            color: #94a3b8;
+        .gold-gradient-btn:hover {
+            background: linear-gradient(135deg, #f0ce68 0%, #fae69e 50%, #d4a832 100%);
         }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col justify-between selection:bg-amber-500 selection:text-emerald-950">
 
-<div class="container">
-    <header>
-        <h1>ঐতিহাসিক চরমোনাই মাহফিল ফ্রেম</h1>
-        <p>আপনার ছবি যুক্ত করে হাই-কোয়ালিটি প্রোফাইল পিকচার তৈরি করুন</p>
-    </header>
-
-    <div class="canvas-box" id="canvasBox">
-        <canvas id="frameCanvas" width="1080" height="1080"></canvas>
-        <div class="hint-badge" id="hintBadge">👆 ছবি আপলোড করে আঙুল দিয়ে সেট করুন</div>
-    </div>
-
-    <div class="controls">
-        <label class="upload-btn">
-            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
-            </svg>
-            গ্যালারি থেকে ছবি নির্বাচন করুন
-            <input type="file" id="imageInput" accept="image/*">
-        </label>
-
-        <div class="slider-group">
-            <div class="slider-header">
-                <span>ছবি জুম (Zoom)</span>
-                <span id="zoomVal">100%</span>
+    <!-- Header -->
+    <header class="bg-[#072115] border-b border-amber-500/20 py-4 px-4 shadow-lg sticky top-0 z-20">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-300 to-amber-600 flex items-center justify-center text-[#061a11] font-bold text-xl shadow-md">
+                    ۞
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-bold text-amber-300 leading-tight">চরমোনাই মাহফিল ফ্রেম</h1>
+                    <p class="text-xs text-emerald-300/80">আপনার প্রোফাইল ছবি তৈরি করুন সহজেই</p>
+                </div>
             </div>
-            <input type="range" id="zoomSlider" min="0.4" max="2.5" step="0.02" value="1">
-        </div>
-
-        <div class="action-row">
-            <button class="btn-reset" id="resetBtn">রিসেট</button>
-            <button class="btn-download" id="downloadBtn">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                </svg>
-                HD ছবি ডাউনলোড করুন
+            <button onclick="resetAll()" class="text-xs bg-emerald-900/80 hover:bg-emerald-800 text-amber-200 border border-amber-500/30 px-3 py-1.5 rounded-lg transition">
+                রিসেট করুন
             </button>
         </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl w-full mx-auto px-4 py-6 sm:py-8 flex-grow">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+            
+            <!-- Left Column: Canvas Preview -->
+            <div class="lg:col-span-6 flex flex-col items-center">
+                <div class="w-full max-w-[440px] bg-[#072115] p-3 sm:p-4 rounded-2xl border border-amber-500/30 shadow-2xl relative">
+                    <!-- Canvas Container -->
+                    <div class="relative w-full aspect-square rounded-xl overflow-hidden shadow-inner bg-[#061a11]">
+                        <canvas id="frameCanvas" width="1080" height="1080" class="w-full h-full block"></canvas>
+                    </div>
+                    
+                    <!-- Helper Hint -->
+                    <div class="mt-3 flex items-center justify-between text-xs text-emerald-300/90 px-1">
+                        <span class="flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11"></path></svg>
+                            ছবি সরানোর জন্য ফ্রেমের ওপর আঙুল বা মাউস দিয়ে ড্র্যাগ করুন
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Controls -->
+            <div class="lg:col-span-6 flex flex-col gap-5">
+                
+                <!-- Step 1: Upload Photo & Zoom -->
+                <div class="bg-[#072115] p-5 rounded-2xl border border-emerald-800/80 shadow-xl">
+                    <h2 class="text-base font-bold text-amber-300 mb-3 flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center text-sm border border-amber-400/40">১</span>
+                        আপনার ছবি যুক্ত ও সেট করুন
+                    </h2>
+
+                    <!-- Upload Button -->
+                    <label for="imageUpload" class="w-full cursor-pointer flex items-center justify-center gap-3 bg-emerald-800/70 hover:bg-emerald-700/80 active:scale-[0.99] text-white font-semibold py-3.5 px-4 rounded-xl border-2 border-dashed border-amber-400/60 transition shadow-md">
+                        <svg class="w-6 h-6 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        <span id="uploadBtnText" class="text-base">গ্যালারি থেকে ছবি আপলোড করুন</span>
+                    </label>
+                    <input type="file" id="imageUpload" accept="image/*" class="hidden">
+
+                    <!-- Zoom & Position Controls -->
+                    <div id="photoAdjustControls" class="mt-4 pt-4 border-t border-emerald-800/60 space-y-3 opacity-60 pointer-events-none transition-opacity">
+                        <div class="flex items-center justify-between text-sm">
+                            <label for="zoomSlider" class="text-emerald-200 font-medium flex items-center gap-1.5">
+                                <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
+                                ছবি জুম (ছোট/বড়) করুন:
+                            </label>
+                            <button type="button" onclick="resetPhotoPosition()" class="text-xs text-amber-300 hover:underline">পজিশন ঠিক করুন</button>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs text-emerald-400">-</span>
+                            <input type="range" id="zoomSlider" min="0.2" max="3" step="0.02" value="1" class="w-full">
+                            <span class="text-xs text-emerald-400">+</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Name Input -->
+                <div class="bg-[#072115] p-5 rounded-2xl border border-emerald-800/80 shadow-xl">
+                    <h2 class="text-base font-bold text-amber-300 mb-3 flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center text-sm border border-amber-400/40">২</span>
+                        আপনার নাম লিখুন
+                    </h2>
+                    <div>
+                        <label for="userNameInput" class="block text-xs text-emerald-300 mb-1.5">ফ্রেমের নিচে "প্রচারে:" অংশে আপনার নাম দেখাবে</label>
+                        <input type="text" id="userNameInput" placeholder="যেমন: মুহাম্মদ আব্দুল্লাহ" maxlength="32"
+                            class="w-full bg-[#04140d] text-white placeholder-emerald-600 border border-emerald-700 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 rounded-xl px-4 py-3 text-base outline-none transition">
+                    </div>
+                </div>
+
+                <!-- Optional Accordion: Edit Frame Texts -->
+                <div class="bg-[#072115] rounded-2xl border border-emerald-800/80 shadow-lg overflow-hidden">
+                    <button type="button" onclick="toggleCustomText()" class="w-full px-5 py-3.5 flex items-center justify-between text-left text-sm font-semibold text-emerald-200 hover:bg-emerald-900/40 transition">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            কাস্টম টেক্সট এডিট করুন (ঐচ্ছিক)
+                        </span>
+                        <svg id="accordionIcon" class="w-4 h-4 text-amber-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    
+                    <div id="customTextPanel" class="hidden px-5 pb-5 pt-2 border-t border-emerald-800/60 space-y-3">
+                        <div>
+                            <label class="block text-xs text-emerald-300 mb-1">উপরের ছোট লেখা (গোল্ডেন)</label>
+                            <input type="text" id="topSubInput" value="ঐতিহাসিক চরমোনাই" class="w-full bg-[#04140d] text-white border border-emerald-700 focus:border-amber-400 rounded-lg px-3 py-2 text-sm outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-emerald-300 mb-1">প্রধান শিরোনাম (সাদা)</label>
+                            <input type="text" id="topMainInput" value="বাৎসরিক মাহফিল" class="w-full bg-[#04140d] text-white border border-emerald-700 focus:border-amber-400 rounded-lg px-3 py-2 text-sm outline-none">
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs text-emerald-300 mb-1">তারিখ (গোল্ডেন ব্যাজ)</label>
+                                <input type="text" id="dateInput" value="আগামী ২৭, ২৮ ও ২৯ নভেম্বর ২০২৬" class="w-full bg-[#04140d] text-white border border-emerald-700 focus:border-amber-400 rounded-lg px-3 py-2 text-sm outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-emerald-300 mb-1">বারসমূহ</label>
+                                <input type="text" id="dayInput" value="শুক্র, শনি ও রবিবার" class="w-full bg-[#04140d] text-white border border-emerald-700 focus:border-amber-400 rounded-lg px-3 py-2 text-sm outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-emerald-300 mb-1">মূল স্লোগান</label>
+                            <input type="text" id="sloganInput" value="কবুল হোক, সফল হোক" class="w-full bg-[#04140d] text-white border border-emerald-700 focus:border-amber-400 rounded-lg px-3 py-2 text-sm outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Download Button -->
+                <button type="button" onclick="downloadFrame()" class="w-full gold-gradient-btn font-bold text-lg py-4 px-6 rounded-2xl shadow-xl hover:shadow-amber-500/20 active:scale-[0.98] transition flex items-center justify-center gap-3 cursor-pointer">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    <span>প্রোফাইল ফ্রেম ডাউনলোড করুন</span>
+                </button>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Custom Toast Notification (No alert() used) -->
+    <div id="toastMessage" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-emerald-900 text-amber-200 border border-amber-400/50 px-5 py-3 rounded-full shadow-2xl text-sm font-medium opacity-0 pointer-events-none transition-opacity duration-300 z-50 flex items-center gap-2 whitespace-nowrap">
+        <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+        <span id="toastText">ফ্রেম ডাউনলোড হচ্ছে...</span>
     </div>
 
-    <footer>
-        উচ্চ রেজোলিউশন (1080×1080px) প্রোফাইল ফ্রেম জেনারেটর
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-emerald-400/60 border-t border-emerald-900/50">
+        ঐতিহাসিক চরমোনাই বাৎসরিক মাহফিল • প্রোফাইল ফ্রেম জেনারেটর
     </footer>
-</div>
 
-<script>
-    const canvas = document.getElementById('frameCanvas');
-    const ctx = canvas.getContext('2d');
-    const imageInput = document.getElementById('imageInput');
-    const zoomSlider = document.getElementById('zoomSlider');
-    const zoomVal = document.getElementById('zoomVal');
-    const resetBtn = document.getElementById('resetBtn');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const hintBadge = document.getElementById('hintBadge');
+    <script>
+        const canvas = document.getElementById('frameCanvas');
+        const ctx = canvas.getContext('2d');
+        const SIZE = 1080;
+        const CENTER = SIZE / 2;
+        const OUTER_RADIUS = 515;
 
-    let userImg = null;
-    let imgX = 540;
-    let imgY = 440;
-    let imgScale = 1;
-    let baseScale = 1;
-
-    // Drag variables
-    let isDragging = false;
-    let startX = 0;
-    let startY = 0;
-
-    // Wait for fonts to load before initial draw
-    document.fonts.ready.then(() => {
-        drawCanvas();
-    });
-
-    // Handle Image Upload
-    imageInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const img = new Image();
-            img.onload = () => {
-                userImg = img;
-                // Fit image nicely in upper-center area
-                baseScale = Math.max(1080 / img.width, 1080 / img.height);
-                imgScale = 1;
-                imgX = 540;
-                imgY = 460;
-                zoomSlider.value = 1;
-                zoomVal.textContent = '100%';
-                hintBadge.textContent = '✋ ছবিটি টেনে পজিশন ঠিক করুন';
-                drawCanvas();
-            };
-            img.src = event.target.result;
+        // Application State
+        const state = {
+            image: null,
+            imgX: CENTER,
+            imgY: CENTER - 40,
+            imgScale: 1,
+            baseScale: 1,
+            isDragging: false,
+            dragStartX: 0,
+            dragStartY: 0,
+            userName: '',
+            topSub: 'ঐতিহাসিক চরমোনাই',
+            topMain: 'বাৎসরিক মাহফিল',
+            dateText: 'আগামী ২৭, ২৮ ও ২৯ নভেম্বর ২০২৬',
+            dayText: 'শুক্র, শনি ও রবিবার',
+            sloganText: 'কবুল হোক, সফল হোক'
         };
-        reader.readAsDataURL(file);
-    });
 
-    // Zoom Control
-    zoomSlider.addEventListener('input', (e) => {
-        imgScale = parseFloat(e.target.value);
-        zoomVal.textContent = Math.round(imgScale * 100) + '%';
-        drawCanvas();
-    });
+        // Create Offscreen Islamic Geometric Star Pattern
+        function createIslamicPattern() {
+            const pCanvas = document.createElement('canvas');
+            const pSize = 110;
+            pCanvas.width = pSize;
+            pCanvas.height = pSize;
+            const pCtx = pCanvas.getContext('2d');
 
-    // Reset Control
-    resetBtn.addEventListener('click', () => {
-        if (!userImg) return;
-        imgScale = 1;
-        imgX = 540;
-        imgY = 460;
-        zoomSlider.value = 1;
-        zoomVal.textContent = '100%';
-        drawCanvas();
-    });
+            pCtx.strokeStyle = 'rgba(212, 175, 55, 0.13)';
+            pCtx.lineWidth = 1.5;
 
-    // Pointer / Touch Dragging
-    function getCanvasCoords(clientX, clientY) {
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
-        return {
-            x: (clientX - rect.left) * scaleX,
-            y: (clientY - rect.top) * scaleY
-        };
-    }
+            const half = pSize / 2;
+            const rOuter = 36;
+            const rInner = 14;
 
-    canvas.addEventListener('pointerdown', (e) => {
-        if (!userImg) return;
-        isDragging = true;
-        const coords = getCanvasCoords(e.clientX, e.clientY);
-        startX = coords.x - imgX;
-        startY = coords.y - imgY;
-        canvas.setPointerCapture(e.pointerId);
-    });
+            // Draw 4-point Islamic star / diamond motif
+            pCtx.beginPath();
+            for (let i = 0; i < 8; i++) {
+                const angle = (i * Math.PI) / 4;
+                const r = i % 2 === 0 ? rOuter : rInner;
+                const x = half + r * Math.cos(angle);
+                const y = half + r * Math.sin(angle);
+                if (i === 0) pCtx.moveTo(x, y);
+                else pCtx.lineTo(x, y);
+            }
+            pCtx.closePath();
+            pCtx.stroke();
 
-    canvas.addEventListener('pointermove', (e) => {
-        if (!isDragging || !userImg) return;
-        const coords = getCanvasCoords(e.clientX, e.clientY);
-        imgX = coords.x - startX;
-        imgY = coords.y - startY;
-        drawCanvas();
-    });
+            // Corner connecting lines
+            pCtx.beginPath();
+            pCtx.moveTo(0, 0); pCtx.lineTo(18, 18);
+            pCtx.moveTo(pSize, 0); pCtx.lineTo(pSize - 18, 18);
+            pCtx.moveTo(0, pSize); pCtx.lineTo(18, pSize - 18);
+            pCtx.moveTo(pSize, pSize); pCtx.lineTo(pSize - 18, pSize - 18);
+            pCtx.stroke();
 
-    canvas.addEventListener('pointerup', (e) => {
-        isDragging = false;
-        canvas.releasePointerCapture(e.pointerId);
-    });
-
-    // Helper: Draw Hexagon
-    function drawHexagon(cx, cy, r, fillStyle, strokeStyle, lineWidth) {
-        ctx.save();
-        ctx.beginPath();
-        for (let i = 0; i < 6; i++) {
-            const angle = (Math.PI / 3) * i - Math.PI / 6;
-            const x = cx + r * Math.cos(angle);
-            const y = cy + r * Math.sin(angle);
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
+            return ctx.createPattern(pCanvas, 'repeat');
         }
-        ctx.closePath();
-        if (fillStyle) {
-            ctx.fillStyle = fillStyle;
-            ctx.fill();
-        }
-        if (strokeStyle) {
-            ctx.lineWidth = lineWidth;
-            ctx.strokeStyle = strokeStyle;
-            ctx.stroke();
-        }
-        ctx.restore();
-    }
 
-    // Helper: Draw Rounded Pill
-    function drawRoundRect(x, y, w, h, r) {
-        ctx.beginPath();
-        ctx.moveTo(x + r, y);
-        ctx.lineTo(x + w - r, y);
-        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-        ctx.lineTo(x + w, y + h - r);
-        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-        ctx.lineTo(x + r, y + h);
-        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-        ctx.lineTo(x, y + r);
-        ctx.quadraticCurveTo(x, y, x + r, y);
-        ctx.closePath();
-    }
+        const geometricPattern = createIslamicPattern();
 
-    // Main Render Function
-    function drawCanvas() {
-        ctx.clearRect(0, 0, 1080, 1080);
-
-        // 1. Background / Placeholder
-        if (userImg) {
-            const w = userImg.width * baseScale * imgScale;
-            const h = userImg.height * baseScale * imgScale;
-            ctx.drawImage(userImg, imgX - w / 2, imgY - h / 2, w, h);
-        } else {
-            // Elegant default placeholder background
-            const bgGrad = ctx.createLinearGradient(0, 0, 0, 1080);
-            bgGrad.addColorStop(0, '#e2e8f0');
-            bgGrad.addColorStop(1, '#94a3b8');
-            ctx.fillStyle = bgGrad;
-            ctx.fillRect(0, 0, 1080, 1080);
-
-            // Silhouette Icon
-            ctx.fillStyle = '#64748b';
+        // Helper: Draw Rounded Pill Rect
+        function drawPill(ctx, x, y, width, height, radius) {
             ctx.beginPath();
-            ctx.arc(540, 310, 110, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(540, 620, 220, Math.PI, 0);
-            ctx.fill();
-
-            ctx.fillStyle = '#1e293b';
-            ctx.font = 'bold 36px "Hind Siliguri", sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('এখানে আপনার ছবি বসবে', 540, 480);
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
         }
 
-        // Subtle outer vignette border
-        ctx.save();
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
-        ctx.lineWidth = 14;
-        ctx.strokeRect(7, 7, 1066, 1066);
-        ctx.restore();
+        // Main Render Function
+        function renderCanvas() {
+            ctx.clearRect(0, 0, SIZE, SIZE);
 
-        // 2. RIGHT SIDE DATE PANEL (Light Sky-Blue Rounded Shield)
-        ctx.save();
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
-        ctx.shadowBlur = 22;
-        ctx.shadowOffsetX = -4;
-        ctx.shadowOffsetY = 6;
+            // 1. Outer Dark Forest Green Background
+            ctx.fillStyle = '#061a11';
+            ctx.fillRect(0, 0, SIZE, SIZE);
 
-        const rightGrad = ctx.createLinearGradient(650, 450, 1040, 860);
-        rightGrad.addColorStop(0, '#5ec2f0');
-        rightGrad.addColorStop(0.5, '#3b9cd9');
-        rightGrad.addColorStop(1, '#1d6fa8');
-
-        ctx.beginPath();
-        ctx.moveTo(655, 530);
-        ctx.quadraticCurveTo(855, 440, 1025, 530);
-        ctx.lineTo(1025, 860);
-        ctx.lineTo(630, 860);
-        ctx.closePath();
-        ctx.fillStyle = rightGrad;
-        ctx.fill();
-
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = '#bae6fd';
-        ctx.stroke();
-        ctx.restore();
-
-        // Date Rows (বুধবার ২৫, বৃহস্পতিবার ২৬, শুক্রবার ২৭)
-        const dates = [
-            { day: 'বুধবার', num: '২৫', y: 555, xOffset: 10 },
-            { day: 'বৃহস্পতিবার', num: '২৬', y: 635, xOffset: 0 },
-            { day: 'শুক্রবার', num: '২৭', y: 715, xOffset: 12 }
-        ];
-
-        dates.forEach(item => {
+            // 2. Clip to Main Circle
             ctx.save();
-            // Dark Navy Pill for Day Name
-            const pillX = 665 + item.xOffset;
-            const pillW = 240;
-            const pillH = 54;
+            ctx.beginPath();
+            ctx.arc(CENTER, CENTER, OUTER_RADIUS, 0, Math.PI * 2);
+            ctx.clip();
+
+            // 3. Center Photo Cutout Background (Soft Sage/White Radial Gradient)
+            const bgGrad = ctx.createRadialGradient(CENTER, CENTER - 60, 80, CENTER, CENTER - 40, 480);
+            bgGrad.addColorStop(0, '#eef5f1');
+            bgGrad.addColorStop(0.65, '#d5e4dc');
+            bgGrad.addColorStop(1, '#9ab8a8');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, SIZE, SIZE);
+
+            // 4. Draw User Image OR Placeholder Silhouette
+            if (state.image) {
+                ctx.save();
+                const drawW = state.image.width * state.baseScale * state.imgScale;
+                const drawH = state.image.height * state.baseScale * state.imgScale;
+                ctx.drawImage(
+                    state.image,
+                    state.imgX - drawW / 2,
+                    state.imgY - drawH / 2,
+                    drawW,
+                    drawH
+                );
+                ctx.restore();
+            } else {
+                // Clean Silhouette Placeholder
+                ctx.save();
+                ctx.fillStyle = 'rgba(130, 158, 144, 0.45)';
+                // Head
+                ctx.beginPath();
+                ctx.arc(CENTER, 355, 88, 0, Math.PI * 2);
+                ctx.fill();
+                // Shoulders
+                ctx.beginPath();
+                ctx.ellipse(CENTER, 625, 190, 115, 0, Math.PI, 0, false);
+                ctx.fill();
+
+                // Placeholder Pill Badge ("আপনার প্রোফাইল ছবি এখানে")
+                const phW = 370;
+                const phH = 56;
+                const phX = CENTER - phW / 2;
+                const phY = 495;
+                drawPill(ctx, phX, phY, phW, phH, phH / 2);
+                ctx.fillStyle = '#14472e';
+                ctx.fill();
+                ctx.lineWidth = 2.5;
+                ctx.strokeStyle = '#e5c158';
+                ctx.stroke();
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '600 26px "Hind Siliguri", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('আপনার প্রোফাইল ছবি এখানে', CENTER, phY + phH / 2 + 2);
+                ctx.restore();
+            }
+
+            // Inner subtle shadow vignette inside photo area
+            const innerShadow = ctx.createRadialGradient(CENTER, CENTER, OUTER_RADIUS - 45, CENTER, CENTER, OUTER_RADIUS);
+            innerShadow.addColorStop(0, 'rgba(6, 26, 17, 0)');
+            innerShadow.addColorStop(1, 'rgba(6, 26, 17, 0.35)');
+            ctx.fillStyle = innerShadow;
+            ctx.fillRect(0, 0, SIZE, SIZE);
+
+            // 5. TOP CURVED HEADER BANNER
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(SIZE, 0);
+            ctx.lineTo(SIZE, 222);
+            // Gentle convex downward curve matching poster
+            ctx.quadraticCurveTo(CENTER, 198, 0, 222);
+            ctx.closePath();
+
+            // Rich Emerald Gradient Fill
+            const topGrad = ctx.createLinearGradient(0, 0, 0, 225);
+            topGrad.addColorStop(0, '#082618');
+            topGrad.addColorStop(1, '#0e3b25');
+            ctx.fillStyle = topGrad;
+            ctx.fill();
+
+            // Overlay Islamic Geometric Pattern
+            if (geometricPattern) {
+                ctx.fillStyle = geometricPattern;
+                ctx.fill();
+            }
+
+            // Top Banner Gold Bottom Border Line
+            ctx.beginPath();
+            ctx.moveTo(0, 222);
+            ctx.quadraticCurveTo(CENTER, 198, SIZE, 222);
+            ctx.lineWidth = 8;
+            const goldLineGrad = ctx.createLinearGradient(100, 0, SIZE - 100, 0);
+            goldLineGrad.addColorStop(0, '#c89d28');
+            goldLineGrad.addColorStop(0.5, '#fae084');
+            goldLineGrad.addColorStop(1, '#c89d28');
+            ctx.strokeStyle = goldLineGrad;
+            ctx.stroke();
+
+            // Thin inner accent line
+            ctx.beginPath();
+            ctx.moveTo(0, 206);
+            ctx.quadraticCurveTo(CENTER, 182, SIZE, 206);
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = 'rgba(245, 215, 110, 0.35)';
+            ctx.stroke();
+            ctx.restore();
+
+            // Top Banner Typography
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // Top Sub-header ("ঐতিহাসিক চরমোনাই")
+            ctx.fillStyle = '#f3d06b';
+            ctx.font = '700 38px "Hind Siliguri", sans-serif';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+            ctx.shadowBlur = 6;
+            ctx.shadowOffsetY = 2;
+            ctx.fillText(state.topSub, CENTER, 92);
+
+            // Top Main Title ("বাৎসরিক মাহফিল")
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '800 62px "Noto Serif Bengali", "Hind Siliguri", serif';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.75)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetY = 3;
+            ctx.fillText(state.topMain, CENTER, 152);
+            ctx.restore();
+
+            // 6. BOTTOM CURVED BANNER
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(0, 650);
+            // Gentle upward arch matching poster
+            ctx.quadraticCurveTo(CENTER, 608, SIZE, 650);
+            ctx.lineTo(SIZE, SIZE);
+            ctx.lineTo(0, SIZE);
+            ctx.closePath();
+
+            const botGrad = ctx.createLinearGradient(0, 610, 0, SIZE);
+            botGrad.addColorStop(0, '#0e3b25');
+            botGrad.addColorStop(0.55, '#09291a');
+            botGrad.addColorStop(1, '#061c11');
+            ctx.fillStyle = botGrad;
+            ctx.fill();
+
+            // Overlay Islamic Geometric Pattern
+            if (geometricPattern) {
+                ctx.fillStyle = geometricPattern;
+                ctx.fill();
+            }
+
+            // Subtle glossy curve highlight inside bottom banner
+            ctx.beginPath();
+            ctx.moveTo(0, 795);
+            ctx.quadraticCurveTo(CENTER, 765, SIZE, 795);
+            ctx.lineTo(SIZE, SIZE);
+            ctx.lineTo(0, SIZE);
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(4, 18, 11, 0.28)';
+            ctx.fill();
+
+            // Bottom Banner Gold Top Arch Border
+            ctx.beginPath();
+            ctx.moveTo(0, 650);
+            ctx.quadraticCurveTo(CENTER, 608, SIZE, 650);
+            ctx.lineWidth = 8;
+            ctx.strokeStyle = goldLineGrad;
+            ctx.stroke();
+            ctx.restore();
+
+            // 7. BOTTOM BANNER ELEMENTS & TYPOGRAPHY
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // A. Golden Pill Badge for Date ("আগামী ২৭, ২৮ ও ২৯ নভেম্বর ২০২৬")
+            const dateBadgeW = 580;
+            const dateBadgeH = 64;
+            const dateBadgeX = CENTER - dateBadgeW / 2;
+            const dateBadgeY = 635;
+
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.55)';
+            ctx.shadowBlur = 12;
+            ctx.shadowOffsetY = 4;
+
+            drawPill(ctx, dateBadgeX, dateBadgeY, dateBadgeW, dateBadgeH, dateBadgeH / 2);
+            const pillGoldGrad = ctx.createLinearGradient(dateBadgeX, dateBadgeY, dateBadgeX + dateBadgeW, dateBadgeY + dateBadgeH);
+            pillGoldGrad.addColorStop(0, '#d4af37');
+            pillGoldGrad.addColorStop(0.5, '#fae187');
+            pillGoldGrad.addColorStop(1, '#c59922');
+            ctx.fillStyle = pillGoldGrad;
+            ctx.fill();
+
+            ctx.lineWidth = 2.5;
+            ctx.strokeStyle = '#fff3c4';
+            ctx.stroke();
+
+            // Reset shadow for crisp dark text inside gold pill
+            ctx.shadowColor = 'transparent';
+            ctx.fillStyle = '#072416';
+            ctx.font = '700 33px "Hind Siliguri", sans-serif';
+            ctx.fillText(state.dateText, CENTER, dateBadgeY + dateBadgeH / 2 + 2);
+
+            // B. Day Text ("শুক্র, শনি ও রবিবার")
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '700 36px "Hind Siliguri", sans-serif';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.65)';
+            ctx.shadowBlur = 6;
+            ctx.shadowOffsetY = 2;
+            ctx.fillText(state.dayText, CENTER, 742);
+
+            // Thin decorative gold divider line above slogan
+            const divGrad = ctx.createLinearGradient(CENTER - 260, 0, CENTER + 260, 0);
+            divGrad.addColorStop(0, 'rgba(245, 215, 110, 0)');
+            divGrad.addColorStop(0.5, 'rgba(245, 215, 110, 0.55)');
+            divGrad.addColorStop(1, 'rgba(245, 215, 110, 0)');
+            ctx.fillStyle = divGrad;
+            ctx.fillRect(CENTER - 260, 776, 520, 2);
+
+            // C. Large Golden Slogan ("কবুল হোক, সফল হোক")
+            ctx.font = '800 66px "Noto Serif Bengali", "Hind Siliguri", serif';
+            const sloganGrad = ctx.createLinearGradient(0, 795, 0, 865);
+            sloganGrad.addColorStop(0, '#fff0b3');
+            sloganGrad.addColorStop(0.5, '#f5d061');
+            sloganGrad.addColorStop(1, '#c99b24');
+            ctx.fillStyle = sloganGrad;
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetY = 4;
+            ctx.fillText(state.sloganText, CENTER, 834);
+
+            // D. Bottom Promoter Pill Badge ("প্রচারে: আপনার নাম")
+            const displayName = state.userName.trim() ? state.userName.trim() : 'আপনার নাম';
+            const promoterFullText = `প্রচারে: ${displayName}`;
             
-            ctx.shadowColor = 'rgba(0,0,0,0.35)';
+            ctx.font = '700 32px "Hind Siliguri", sans-serif';
+            const measuredTextW = ctx.measureText(promoterFullText).width;
+            const promBadgeW = Math.min(Math.max(360, measuredTextW + 90), 680);
+            const promBadgeH = 60;
+            const promBadgeX = CENTER - promBadgeW / 2;
+            const promBadgeY = 895;
+
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
             ctx.shadowBlur = 8;
             ctx.shadowOffsetY = 3;
 
-            const pillGrad = ctx.createLinearGradient(pillX, item.y - 27, pillX, item.y + 27);
-            pillGrad.addColorStop(0, '#1e3a8a');
-            pillGrad.addColorStop(1, '#0f172a');
-
-            drawRoundRect(pillX, item.y - 27, pillW, pillH, 27);
-            ctx.fillStyle = pillGrad;
+            drawPill(ctx, promBadgeX, promBadgeY, promBadgeW, promBadgeH, promBadgeH / 2);
+            ctx.fillStyle = '#092819';
             ctx.fill();
-            ctx.lineWidth = 2.5;
-            ctx.strokeStyle = '#93c5fd';
+
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#e5c158';
             ctx.stroke();
 
-            // Day Text
-            ctx.shadowBlur = 0;
+            // Render "প্রচারে:" in gold and Name in crisp white
+            ctx.shadowColor = 'transparent';
+            const labelPart = 'প্রচারে: ';
+            const labelW = ctx.measureText(labelPart).width;
+            const nameW = ctx.measureText(displayName).width;
+            const totalW = labelW + nameW;
+            const startX = CENTER - totalW / 2;
+
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#f3d06b';
+            ctx.fillText(labelPart, startX, promBadgeY + promBadgeH / 2 + 2);
+
             ctx.fillStyle = '#ffffff';
-            ctx.font = '700 31px "Hind Siliguri", sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(item.day, pillX + pillW / 2 - 12, item.y + 2);
+            ctx.fillText(displayName, startX + labelW, promBadgeY + promBadgeH / 2 + 2);
 
-            // Red/Orange Hexagon Badge for Date Number
-            const hexX = pillX + pillW - 10;
-            const hexGrad = ctx.createLinearGradient(hexX, item.y - 36, hexX, item.y + 36);
-            hexGrad.addColorStop(0, '#f97316');
-            hexGrad.addColorStop(1, '#b91c1c');
+            ctx.restore(); // End Bottom Elements
+            ctx.restore(); // End Main Circle Clip
 
-            drawHexagon(hexX, item.y, 37, hexGrad, '#fef08a', 3.5);
+            // 8. THICK METALLIC GOLD OUTER CIRCULAR RING
+            ctx.save();
+            const ringGrad = ctx.createLinearGradient(100, 100, SIZE - 100, SIZE - 100);
+            ringGrad.addColorStop(0, '#f7df8b');
+            ringGrad.addColorStop(0.25, '#c89d28');
+            ringGrad.addColorStop(0.5, '#fff0b8');
+            ringGrad.addColorStop(0.75, '#d4af37');
+            ringGrad.addColorStop(1, '#f5d76e');
 
-            // Date Number Text
-            ctx.fillStyle = '#ffffff';
-            ctx.font = '700 34px "Hind Siliguri", sans-serif';
-            ctx.fillText(item.num, hexX, item.y + 3);
+            // Outer Gold Ring
+            ctx.beginPath();
+            ctx.arc(CENTER, CENTER, OUTER_RADIUS, 0, Math.PI * 2);
+            ctx.lineWidth = 16;
+            ctx.strokeStyle = ringGrad;
+            ctx.stroke();
+
+            // Fine Inner White/Gold Hairline inside the ring
+            ctx.beginPath();
+            ctx.arc(CENTER, CENTER, OUTER_RADIUS - 9, 0, Math.PI * 2);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.55)';
+            ctx.stroke();
             ctx.restore();
-        });
-
-        // 3. MAIN BOTTOM ROYAL BLUE OVAL BANNER
-        ctx.save();
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
-        ctx.shadowBlur = 30;
-        ctx.shadowOffsetY = -6;
-
-        const mainGrad = ctx.createRadialGradient(480, 740, 60, 520, 820, 540);
-        mainGrad.addColorStop(0, '#2563eb');
-        mainGrad.addColorStop(0.55, '#1e3a8a');
-        mainGrad.addColorStop(1, '#091536');
-
-        ctx.beginPath();
-        ctx.ellipse(515, 835, 495, 225, -0.03, 0, Math.PI * 2);
-        ctx.fillStyle = mainGrad;
-        ctx.fill();
-
-        // Double Glowing Cyan/Gold Border on Oval
-        ctx.lineWidth = 8;
-        ctx.strokeStyle = '#38bdf8';
-        ctx.stroke();
-
-        ctx.lineWidth = 2.5;
-        ctx.strokeStyle = '#fde047';
-        ctx.stroke();
-        ctx.restore();
-
-        // Decorative Small Hexagons on Blue Oval
-        drawHexagon(115, 760, 15, '#38bdf8', '#ffffff', 2);
-        drawHexagon(175, 895, 13, '#38bdf8', null, 0);
-        drawHexagon(630, 865, 14, '#38bdf8', null, 0);
-
-        // 4. MAIN TYPOGRAPHY INSIDE OVAL
-        ctx.save();
-        ctx.textAlign = 'center';
-
-        // "ঐতিহাসিক"
-        ctx.font = '700 48px "Noto Serif Bengali", serif';
-        ctx.fillStyle = '#ffffff';
-        ctx.shadowColor = 'rgba(0,0,0,0.8)';
-        ctx.shadowBlur = 8;
-        ctx.shadowOffsetY = 3;
-        ctx.fillText('ঐতিহাসিক', 395, 695);
-
-        // "চরমোনাই" (3D Embossed Gold)
-        ctx.font = '900 106px "Noto Serif Bengali", serif';
-        // 3D Extrusion Shadow
-        ctx.fillStyle = '#78350f';
-        ctx.fillText('চরমোনাই', 400, 796);
-        ctx.fillStyle = '#92400e';
-        ctx.fillText('চরমোনাই', 398, 793);
-
-        // Gold Gradient Fill
-        const goldGrad = ctx.createLinearGradient(0, 710, 0, 800);
-        goldGrad.addColorStop(0, '#fef08a');
-        goldGrad.addColorStop(0.45, '#facc15');
-        goldGrad.addColorStop(0.8, '#eab308');
-        goldGrad.addColorStop(1, '#ca8a04');
-
-        ctx.fillStyle = goldGrad;
-        ctx.fillText('চরমোনাই', 395, 790);
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = '#fef9c3';
-        ctx.strokeText('চরমোনাই', 395, 790);
-
-        // "অগ্রহায়ণ মাহফিল" (Red-Orange with White Outline)
-        ctx.font = '700 54px "Noto Serif Bengali", serif';
-        ctx.lineJoin = 'round';
-        ctx.lineWidth = 9;
-        ctx.strokeStyle = '#ffffff';
-        ctx.strokeText('অগ্রহায়ণ মাহফিল', 395, 865);
-
-        const redTextGrad = ctx.createLinearGradient(0, 825, 0, 875);
-        redTextGrad.addColorStop(0, '#ef4444');
-        redTextGrad.addColorStop(1, '#991b1b');
-        ctx.fillStyle = redTextGrad;
-        ctx.fillText('অগ্রহায়ণ মাহফিল', 395, 865);
-
-        // Bottom Slogan
-        ctx.shadowColor = 'rgba(0,0,0,0.9)';
-        ctx.shadowBlur = 6;
-        ctx.fillStyle = '#f8fafc';
-        ctx.font = '600 31px "Hind Siliguri", sans-serif';
-        ctx.fillText('চলো চলো সবাই যাই', 495, 955);
-        ctx.fillText('আসছে মাহফিল চরমোনাই', 495, 995);
-        ctx.restore();
-
-        // 5. ORNATE GOLD RIBBON FOR "নভেম্বর ২০২৬"
-        ctx.save();
-        const ribX = 685;
-        const ribY = 768;
-        const ribW = 315;
-        const ribH = 56;
-
-        ctx.shadowColor = 'rgba(0,0,0,0.5)';
-        ctx.shadowBlur = 10;
-        ctx.shadowOffsetY = 4;
-
-        // Ribbon Scroll Ends
-        ctx.fillStyle = '#b45309';
-        ctx.beginPath();
-        ctx.moveTo(ribX - 18, ribY + 10);
-        ctx.lineTo(ribX + 10, ribY + 10);
-        ctx.lineTo(ribX + 10, ribY + ribH + 6);
-        ctx.lineTo(ribX - 18, ribY + ribH + 6);
-        ctx.lineTo(ribX - 6, ribY + ribH / 2 + 8);
-        ctx.closePath();
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.moveTo(ribX + ribW + 18, ribY + 10);
-        ctx.lineTo(ribX + ribW - 10, ribY + 10);
-        ctx.lineTo(ribX + ribW - 10, ribY + ribH + 6);
-        ctx.lineTo(ribX + ribW + 18, ribY + ribH + 6);
-        ctx.lineTo(ribX + ribW + 6, ribY + ribH / 2 + 8);
-        ctx.closePath();
-        ctx.fill();
-
-        // Main Ribbon Body
-        const ribGrad = ctx.createLinearGradient(ribX, ribY, ribX, ribY + ribH);
-        ribGrad.addColorStop(0, '#f59e0b');
-        ribGrad.addColorStop(0.5, '#d97706');
-        ribGrad.addColorStop(1, '#92400e');
-
-        drawRoundRect(ribX, ribY, ribW, ribH, 12);
-        ctx.fillStyle = ribGrad;
-        ctx.fill();
-        ctx.lineWidth = 3.5;
-        ctx.strokeStyle = '#fef08a';
-        ctx.stroke();
-
-        // "নভেম্বর ২০২৬" Text
-        ctx.shadowBlur = 4;
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '700 35px "Hind Siliguri", sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('নভেম্বর ২০২৬', ribX + ribW / 2, ribY + ribH / 2 + 2);
-        ctx.restore();
-
-        // 6. "সফল হোক কবুল হোক" GRID BADGE
-        ctx.save();
-        const boxX = 720;
-        const boxY = 842;
-        const cellW = 48;
-        const cellH = 38;
-        const topChars = ['স', 'ফ', 'ল'];
-        const botChars = ['ক', 'বু', 'ল'];
-
-        ctx.font = '700 25px "Hind Siliguri", sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-
-        for (let i = 0; i < 3; i++) {
-            // Top Row (Yellow)
-            ctx.fillStyle = '#facc15';
-            ctx.fillRect(boxX + i * cellW, boxY, cellW, cellH);
-            ctx.strokeStyle = '#0f172a';
-            ctx.lineWidth = 2.5;
-            ctx.strokeRect(boxX + i * cellW, boxY, cellW, cellH);
-            ctx.fillStyle = '#0f172a';
-            ctx.fillText(topChars[i], boxX + i * cellW + cellW / 2, boxY + cellH / 2 + 2);
-
-            // Bottom Row (White)
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(boxX + i * cellW, boxY + cellH, cellW, cellH);
-            ctx.strokeRect(boxX + i * cellW, boxY + cellH, cellW, cellH);
-            ctx.fillStyle = '#0f172a';
-            ctx.fillText(botChars[i], boxX + i * cellW + cellW / 2, boxY + cellH + cellH / 2 + 2);
         }
 
-        // Right Vertical Box ("হোক")
-        const rightBoxX = boxX + 3 * cellW;
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(rightBoxX, boxY, 46, cellH * 2);
-        ctx.strokeRect(rightBoxX, boxY, 46, cellH * 2);
+        // Image Upload Handling
+        const imageUpload = document.getElementById('imageUpload');
+        const zoomSlider = document.getElementById('zoomSlider');
+        const photoAdjustControls = document.getElementById('photoAdjustControls');
+        const uploadBtnText = document.getElementById('uploadBtnText');
 
-        ctx.save();
-        ctx.translate(rightBoxX + 23, boxY + cellH);
-        ctx.rotate(-Math.PI / 2);
-        ctx.fillStyle = '#b91c1c';
-        ctx.font = '700 26px "Hind Siliguri", sans-serif';
-        ctx.fillText('হোক', 0, 2);
-        ctx.restore();
+        imageUpload.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
 
-        ctx.restore();
-    }
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    state.image = img;
+                    // Fit image nicely into the center cutout area (approx 520px height)
+                    const targetSize = 560;
+                    state.baseScale = Math.max(targetSize / img.width, targetSize / img.height);
+                    state.imgScale = 1;
+                    state.imgX = CENTER;
+                    state.imgY = 420; // Centered in the visible cutout window
 
-    // Download High-Res PNG
-    downloadBtn.addEventListener('click', () => {
-        const link = document.createElement('a');
-        link.download = 'Charmonai-Mahfil-Profile-Frame-2026.png';
-        link.href = canvas.toDataURL('image/png', 1.0);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    });
-</script>
+                    zoomSlider.value = 1;
+                    photoAdjustControls.classList.remove('opacity-60', 'pointer-events-none');
+                    uploadBtnText.textContent = 'অন্য ছবি পরিবর্তন করুন';
+                    renderCanvas();
+                    showToast('ছবি যুক্ত হয়েছে! প্রয়োজনে জুম বা ড্র্যাগ করে ঠিক করুন।');
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
 
+        // Zoom Slider Event
+        zoomSlider.addEventListener('input', function(e) {
+            state.imgScale = parseFloat(e.target.value);
+            renderCanvas();
+        });
+
+        function resetPhotoPosition() {
+            if (!state.image) return;
+            state.imgScale = 1;
+            state.imgX = CENTER;
+            state.imgY = 420;
+            zoomSlider.value = 1;
+            renderCanvas();
+        }
+
+        // Drag / Pan Support (Mouse & Touch)
+        function getCanvasCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleFactor = SIZE / rect.width;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: (clientX - rect.left) * scaleFactor,
+                y: (clientY - rect.top) * scaleFactor
+            };
+        }
+
+        function startDrag(e) {
+            if (!state.image) return;
+            state.isDragging = true;
+            const coords = getCanvasCoords(e);
+            state.dragStartX = coords.x - state.imgX;
+            state.dragStartY = coords.y - state.imgY;
+        }
+
+        function onDrag(e) {
+            if (!state.isDragging || !state.image) return;
+            if (e.cancelable) e.preventDefault();
+            const coords = getCanvasCoords(e);
+            state.imgX = coords.x - state.dragStartX;
+            state.imgY = coords.y - state.dragStartY;
+            renderCanvas();
+        }
+
+        function endDrag() {
+            state.isDragging = false;
+        }
+
+        canvas.addEventListener('mousedown', startDrag);
+        window.addEventListener('mousemove', onDrag);
+        window.addEventListener('mouseup', endDrag);
+
+        canvas.addEventListener('touchstart', startDrag, { passive: false });
+        canvas.addEventListener('touchmove', onDrag, { passive: false });
+        canvas.addEventListener('touchend', endDrag);
+
+        // Live Text Inputs
+        document.getElementById('userNameInput').addEventListener('input', function(e) {
+            state.userName = e.target.value;
+            renderCanvas();
+        });
+
+        document.getElementById('topSubInput').addEventListener('input', function(e) {
+            state.topSub = e.target.value;
+            renderCanvas();
+        });
+
+        document.getElementById('topMainInput').addEventListener('input', function(e) {
+            state.topMain = e.target.value;
+            renderCanvas();
+        });
+
+        document.getElementById('dateInput').addEventListener('input', function(e) {
+            state.dateText = e.target.value;
+            renderCanvas();
+        });
+
+        document.getElementById('dayInput').addEventListener('input', function(e) {
+            state.dayText = e.target.value;
+            renderCanvas();
+        });
+
+        document.getElementById('sloganInput').addEventListener('input', function(e) {
+            state.sloganText = e.target.value;
+            renderCanvas();
+        });
+
+        // Accordion Toggle
+        function toggleCustomText() {
+            const panel = document.getElementById('customTextPanel');
+            const icon = document.getElementById('accordionIcon');
+            panel.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+        }
+
+        // Reset Everything
+        function resetAll() {
+            state.image = null;
+            state.imgScale = 1;
+            state.userName = '';
+            state.topSub = 'ঐতিহাসিক চরমোনাই';
+            state.topMain = 'বাৎসরিক মাহফিল';
+            state.dateText = 'আগামী ২৭, ২৮ ও ২৯ নভেম্বর ২০২৬';
+            state.dayText = 'শুক্র, শনি ও রবিবার';
+            state.sloganText = 'কবুল হোক, সফল হোক';
+
+            document.getElementById('userNameInput').value = '';
+            document.getElementById('topSubInput').value = state.topSub;
+            document.getElementById('topMainInput').value = state.topMain;
+            document.getElementById('dateInput').value = state.dateText;
+            document.getElementById('dayInput').value = state.dayText;
+            document.getElementById('sloganInput').value = state.sloganText;
+            imageUpload.value = '';
+            zoomSlider.value = 1;
+            photoAdjustControls.classList.add('opacity-60', 'pointer-events-none');
+            uploadBtnText.textContent = 'গ্যালারি থেকে ছবি আপলোড করুন';
+
+            renderCanvas();
+            showToast('সবকিছু রিসেট করা হয়েছে');
+        }
+
+        // Download High-Res PNG
+        function downloadFrame() {
+            renderCanvas();
+            try {
+                const dataURL = canvas.toDataURL('image/png', 1.0);
+                const link = document.createElement('a');
+                const safeName = state.userName.trim() ? state.userName.trim().replace(/\s+/g, '_') : 'profile';
+                link.download = `Charmonai_Mahfil_Frame_${safeName}.png`;
+                link.href = dataURL;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToast('আলহামদুলিল্লাহ! আপনার প্রোফাইল ফ্রেম ডাউনলোড হয়েছে।');
+            } catch (err) {
+                showToast('ডাউনলোড করতে সমস্যা হয়েছে, আবার চেষ্টা করুন।');
+            }
+        }
+
+        // Toast Helper
+        let toastTimeout;
+        function showToast(msg) {
+            const toast = document.getElementById('toastMessage');
+            const toastText = document.getElementById('toastText');
+            toastText.textContent = msg;
+            toast.classList.remove('opacity-0');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('opacity-0');
+            }, 3200);
+        }
+
+        // Ensure Google Fonts are loaded before final canvas render
+        window.onload = function() {
+            renderCanvas();
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(() => {
+                    renderCanvas();
+                });
+            }
+        };
+    </script>
 </body>
-</html>
+    </html>
